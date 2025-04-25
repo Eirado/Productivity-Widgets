@@ -9,10 +9,9 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct TODOBundle: WidgetBundle {
+struct TodoBundle: WidgetBundle {
     var body: some Widget {
-        TODO()
-        TODOControl()
-        TODOLiveActivity()
+        Todo()
+        TodoControl()
     }
 }

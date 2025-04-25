@@ -1,7 +1,4 @@
-//
-//  TODO.swift
-//  TODO
-//
+
 //  Created by Gabriel Amaral on 24/04/25.
 //
 
@@ -45,17 +42,14 @@ struct TODOEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
+        GeometryReader { geometry in
+            ZStack {}
 
-            Text("Favorite Emoji:")
-            Text(entry.configuration.favoriteEmoji)
         }
     }
 }
 
-struct TODO: Widget {
+struct Todo: Widget {
     let kind: String = "TODO"
 
     var body: some WidgetConfiguration {
@@ -72,17 +66,10 @@ extension ConfigurationAppIntent {
         intent.favoriteEmoji = "😀"
         return intent
     }
-    
-    fileprivate static var starEyes: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "🤩"
-        return intent
-    }
 }
 
 #Preview(as: .systemSmall) {
-    TODO()
+    Todo()
 } timeline: {
     SimpleEntry(date: .now, configuration: .smiley)
-    SimpleEntry(date: .now, configuration: .starEyes)
 }

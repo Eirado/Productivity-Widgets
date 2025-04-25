@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
-            HomeView (
+            TodoView(
                 size: geometry.size,
                 safeArea: geometry.safeAreaInsets
             )

@@ -9,7 +9,7 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-struct TODOControl: ControlWidget {
+struct TodoControl: ControlWidget {
     static let kind: String = "Gabriel.ProductivityWidgets.TODO"
 
     var body: some ControlWidgetConfiguration {
@@ -30,7 +30,7 @@ struct TODOControl: ControlWidget {
     }
 }
 
-extension TODOControl {
+extension TodoControl {
     struct Value {
         var isRunning: Bool
         var name: String
@@ -38,12 +38,12 @@ extension TODOControl {
 
     struct Provider: AppIntentControlValueProvider {
         func previewValue(configuration: TimerConfiguration) -> Value {
-            TODOControl.Value(isRunning: false, name: configuration.timerName)
+            TodoControl.Value(isRunning: false, name: configuration.timerName)
         }
 
         func currentValue(configuration: TimerConfiguration) async throws -> Value {
             let isRunning = true // Check if the timer is running
-            return TODOControl.Value(isRunning: isRunning, name: configuration.timerName)
+            return TodoControl.Value(isRunning: isRunning, name: configuration.timerName)
         }
     }
 }

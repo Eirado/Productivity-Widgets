@@ -6,17 +6,17 @@
 //
 import SwiftUI
 
-struct HomeView: View {
+struct TodoView: View, SizedViewProtocol {
     var size: CGSize
     var safeArea: EdgeInsets
     var body: some View {
         ZStack {
+            
             
         }
     }
 }
 
 #Preview {
-    HomeView(size: DevicePreview.iPhone16Pro.size, safeArea: DevicePreview.iPhone16Pro.safeArea)
+    TodoView(size: DevicePreview.iPhone16Pro.size, safeArea: DevicePreview.iPhone16Pro.safeArea)
 }
-
