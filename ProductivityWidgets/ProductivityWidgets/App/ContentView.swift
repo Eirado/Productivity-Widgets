@@ -8,16 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var context
+
     var body: some View {
         GeometryReader { geometry in
-            TodoView(
-                size: geometry.size,
-                safeArea: geometry.safeAreaInsets
-            )
+            TodoViewFactory.makeTodoView(size: geometry.size, safeArea: geometry.safeAreaInsets, context: context)
         }
     }
-}
-
-#Preview {
-    ContentView()
 }

@@ -15,13 +15,18 @@ public protocol TodoRepositoryProtocol {
 @MainActor
 final class TodoRepository: TodoRepositoryProtocol {
     weak private var context: ModelContext?
-    
+
     init(context: ModelContext) {
         self.context = context
     }
 
     public func create(task: String) async throws {
-        let newTodo = Todo(taskID: UUID().uuidString, task: task, isCompleted: false, priority: .medium, lastModified: .now)
+        let newTodo = Todo(
+            taskID: UUID().uuidString,
+            task: task, isCompleted: false,
+            priority: .medium,
+            lastModified: .now
+        )
         guard let context = context else {
             return
         }

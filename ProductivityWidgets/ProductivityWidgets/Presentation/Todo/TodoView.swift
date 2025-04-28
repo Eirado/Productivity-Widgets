@@ -5,18 +5,43 @@
 //  Created by Gabriel Amaral on 24/04/25.
 //
 import SwiftUI
+import SwiftData
 
 struct TodoView: View, SizedViewProtocol {
     var size: CGSize
     var safeArea: EdgeInsets
-    var body: some View {
-        ZStack {
-            
-            
-        }
+
+    @StateObject private var viewModel: TodoViewModel
+
+    init(size: CGSize, safeArea: EdgeInsets, viewModel: TodoViewModel) {
+        self.size = size
+        self.safeArea = safeArea
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
-}
+
+    var body: some View {
+        NavigationStack {
+            List {
+
+            }
+            .navigationTitle("Todo List")
+            .toolbar { 
+                ToolbarItem(placement: .bottomBar) {
+                    Button(action: {
+                        
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 42))
+                    }
+                }
+            }
+        }
+    }}
 
 #Preview {
-    TodoView(size: DevicePreview.iPhone16Pro.size, safeArea: DevicePreview.iPhone16Pro.safeArea)
+    TodoViewFactory.makeTodoView(
+        size: DevicePreview.iPhone16Pro.size,
+        safeArea: DevicePreview.iPhone16Pro.safeArea,
+        context: ModelContainerProvider().context
+    )
 }
