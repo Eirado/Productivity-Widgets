@@ -22,15 +22,20 @@ struct TodoView: View, SizedViewProtocol {
     var body: some View {
         NavigationStack {
             List {
-
+                Section(viewModel.activeTodosCount) {
+                    
+                }
             }
             .navigationTitle("Todo List")
-            .toolbar { 
+            .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {
-                        
+                        Task {
+                            
+                        }
                     }) {
                         Image(systemName: "plus.circle.fill")
+                            .fontWeight(.light)
                             .font(.system(size: 42))
                     }
                 }

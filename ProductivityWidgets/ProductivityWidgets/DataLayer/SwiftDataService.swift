@@ -9,7 +9,10 @@ import Foundation
 import SwiftData
 
 public protocol TodoRepositoryProtocol {
-    func create(task: String) async throws
+    func createTodo(task: String) async throws
+    func fetchAllTodos() async throws -> [Todo]
+    func fetchUncompletedTodos() async throws -> [Todo]
+    func fetchRecentCompletedTodos() async throws -> [Todo]
 }
 
 @MainActor
@@ -20,7 +23,7 @@ final class TodoRepository: TodoRepositoryProtocol {
         self.context = context
     }
 
-    public func create(task: String) async throws {
+    public func createTodo(task: String) async throws {
         let newTodo = Todo(
             taskID: UUID().uuidString,
             task: task, isCompleted: false,
@@ -32,5 +35,39 @@ final class TodoRepository: TodoRepositoryProtocol {
         }
         context.insert(newTodo)
         try context.save()
+        print(newTodo)
+    }
+
+    public func fetchAllTodos() async throws -> [Todo] {
+        guard let context = context else {
+            return []
+        }
+        let descriptor = FetchDescriptor( predicate: #Predicate<Todo> { _ in true })
+        let allTodos = try context.fetch(descriptor)
+        return allTodos
+    }
+
+    public func fetchRecentCompletedTodos() async throws -> [Todo] {
+        guard let context = context else {
+            return []
+        }
+        let predicate =  #Predicate<Todo> { $0.isCompleted == true }
+        let sort = [SortDescriptor(\Todo.lastModified, order: .reverse)]
+        var recentCompletedTodosDescriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
+        recentCompletedTodosDescriptor.fetchLimit = 15
+        let recentCompletedTodos = try context.fetch(recentCompletedTodosDescriptor)
+        return recentCompletedTodos
+    }
+
+    public func fetchUncompletedTodos() async throws -> [Todo] {
+        guard let context = context else {
+            return []
+        }
+        let predicate =  #Predicate<Todo> { $0.isCompleted == false }
+        let sort = [SortDescriptor(\Todo.lastModified, order: .reverse)]
+        let notCompletedDescriptor =
+        FetchDescriptor(predicate: predicate, sortBy: sort)
+        let activeList = try context.fetch(notCompletedDescriptor)
+        return activeList
     }
 }

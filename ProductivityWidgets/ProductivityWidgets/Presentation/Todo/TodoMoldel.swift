@@ -10,7 +10,7 @@ import Foundation
 import SwiftUICore
 
 @Model
-class Todo {
+public class Todo {
     private(set) var taskID: String = UUID().uuidString
     var task: String
     var isCompleted: Bool = false
