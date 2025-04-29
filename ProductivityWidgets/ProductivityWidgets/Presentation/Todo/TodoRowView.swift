@@ -9,15 +9,13 @@ import SwiftUI
 
 struct TodoRowView: View {
     @Bindable var todo: Todo
-//    @FocusState private var isRowActive: Bool
     @Environment(\.modelContext) private var context
-    
-    var deleteTodo: ()
+    @FocusState var isRowActive
     
     var body: some View {
         HStack(spacing: 8) {
             Button {
-                todo.isCompleted.toggle()
+                    todo.isCompleted.toggle()
             } label: {
                 Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
@@ -26,30 +24,25 @@ struct TodoRowView: View {
                     .foregroundStyle(todo.isCompleted ? .gray : .primary)
                     .contentTransition(.symbolEffect(.replace))
             }
-            TextField("Record Video", text: $todo.task)
+            TextField("", text: $todo.task)
                 .strikethrough(todo.isCompleted)
                 .foregroundStyle(todo.isCompleted ? .gray : .primary)
-//                .focused($isRowActive)
+                .focused($isRowActive)
+                .onSubmit {
+                    if todo.task.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        context.delete(todo)
+                    }
+                }
         }
         .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 10))
-//        .animation(.snappy, value: isRowActive)
         .onAppear {
-//            isRowActive = todo.task.isEmpty
+            isRowActive = todo.task.isEmpty
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button("", systemImage: "trash") {
-                Task {
-                    deleteTodo
-                }
+                context.delete(todo)
             }
             .tint(.red)
-        }
-        .onSubmit(of: .text) {
-            if todo.task.isEmpty {
-                Task {
-                    deleteTodo
-                }
-            }
         }
     }
 }

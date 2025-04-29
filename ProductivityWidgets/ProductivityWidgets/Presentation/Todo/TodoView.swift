@@ -12,8 +12,16 @@ struct TodoView: View, SizedViewProtocol {
     var safeArea: EdgeInsets
 
     @State private var viewModel: TodoViewModel
+    
+    @State private var focusedTodoID: UUID? = nil
+    @FocusState private var focusedField: UUID?
 
-//    @Query(filter: #Predicate<Todo> { _ in true}) private var todos: [Todo]
+    @Query(
+            sort: [
+                SortDescriptor(\Todo.isCompleted, order: .forward),
+                SortDescriptor(\Todo.lastModified, order: .forward)
+            ]
+        ) private var todos: [Todo]
 
     init(size: CGSize, safeArea: EdgeInsets, viewModel: TodoViewModel) {
         self.size = size
@@ -24,13 +32,12 @@ struct TodoView: View, SizedViewProtocol {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    ForEach(viewModel.todos) { todo in
+                withAnimation(.snappy) {
+                    ForEach(todos) { todo in
                         TodoRowView(todo: todo)
                     }
                 }
             }
-
             .navigationTitle("Todo List")
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
@@ -47,7 +54,6 @@ struct TodoView: View, SizedViewProtocol {
             }
         }
     }}
-
 #Preview {
     TodoViewFactory.makeTodoView(
         size: DevicePreview.iPhone16Pro.size,
