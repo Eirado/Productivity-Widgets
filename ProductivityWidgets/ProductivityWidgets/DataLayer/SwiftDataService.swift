@@ -8,11 +8,17 @@
 import Foundation
 import SwiftData
 
+enum PersistenceError: Error {
+    case contextError
+}
+
 public protocol TodoRepositoryProtocol {
-    func createTodo(task: String) async throws
+    func createTodo(task: String) async throws -> Todo
     func fetchAllTodos() async throws -> [Todo]
     func fetchUncompletedTodos() async throws -> [Todo]
     func fetchRecentCompletedTodos() async throws -> [Todo]
+    func deleteTodo(todo: Todo) async throws -> String
+    func deleteAllTodos() async throws
 }
 
 @MainActor
@@ -23,20 +29,41 @@ final class TodoRepository: TodoRepositoryProtocol {
         self.context = context
     }
 
-    public func createTodo(task: String) async throws {
+    public func createTodo(task: String) async throws -> Todo {
+        guard let context = context else {
+            throw PersistenceError.contextError
+        }
         let newTodo = Todo(
             taskID: UUID().uuidString,
             task: task, isCompleted: false,
             priority: .medium,
             lastModified: .now
         )
-        guard let context = context else {
-            return
-        }
         context.insert(newTodo)
         try context.save()
-        print(newTodo)
+        return newTodo
     }
+
+    public func deleteTodo(todo: Todo) async throws -> String {
+        guard let context = context else {
+            throw PersistenceError.contextError
+        }
+        context.delete(todo)
+        try context.save()
+        return todo.taskID
+    }
+
+    public func deleteAllTodos() async throws {
+            guard let context = context else {
+                throw PersistenceError.contextError
+            }
+            let fetchDescriptor = FetchDescriptor<Todo>(predicate: #Predicate<Todo> { _ in true })
+            let todos = try context.fetch(fetchDescriptor)
+            for todo in todos {
+                context.delete(todo)
+            }
+            try context.save()
+        }
 
     public func fetchAllTodos() async throws -> [Todo] {
         guard let context = context else {

@@ -8,30 +8,51 @@
 import Foundation
 import SwiftUI
 
+@Observable
 class TodoViewModel: ObservableObject {
+    
+    var todos: [Todo] = []
 
     private let todoRepository: TodoRepositoryProtocol
-
-    @Published var todos: [Todo] = []
+    init(todoRepository: TodoRepositoryProtocol) {
+        self.todoRepository = todoRepository
+        
+        Task {
+//            try await todoRepository.deleteAllTodos()
+            await loadActiveTodos()
+        }
+        
+        
+    }
     
     public var activeTodosCount: String {
         get {
             let count = todos.count
-            return count == 0 ? "Active": "Active (\(count))"
+            return "(\(count))"
         }
     }
-
-    init(todoRepository: TodoRepositoryProtocol) {
-        self.todoRepository = todoRepository
-        Task {
-            await loadActiveTodos()
-        }
-    }
-
+    
     public func createTodo(task: String) async {
         do {
-            try await todoRepository.createTodo(task: task)
+            let newTodo = try await todoRepository.createTodo(task: task)
+            await MainActor.run {
+                withAnimation(.snappy) {
+                    self.todos.append(newTodo)
+                }
+            }
         } catch {
+        }
+    }
+    
+    public func deleteTodo(todo: Todo) async {
+        do {
+            let deletedTodo = try await todoRepository.deleteTodo(todo: todo)
+            await MainActor.run {
+                withAnimation(.snappy) {
+                    self.todos.removeAll { $0.id == todo.id }
+                }
+            }
+        } catch{
         }
     }
 
@@ -46,12 +67,12 @@ class TodoViewModel: ObservableObject {
         } catch {
         }
     }
-    
+
     public func loadRecentTodos() async {
         do {
             let loadedTodos = try await todoRepository.fetchUncompletedTodos()
             await MainActor.run {
-                withAnimation(.snappy){
+                withAnimation(.snappy) {
                     self.todos = loadedTodos
                 }
             }

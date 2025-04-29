@@ -13,6 +13,8 @@ struct TodoView: View, SizedViewProtocol {
 
     @StateObject private var viewModel: TodoViewModel
 
+    @Query(filter: #Predicate<Todo> { _ in true}) private var todos: [Todo]
+
     init(size: CGSize, safeArea: EdgeInsets, viewModel: TodoViewModel) {
         self.size = size
         self.safeArea = safeArea
@@ -22,18 +24,20 @@ struct TodoView: View, SizedViewProtocol {
     var body: some View {
         NavigationStack {
             List {
-                Section(viewModel.activeTodosCount) {
-                    
+                Section {
+                    ForEach(todos) { todo in
+                        TodoRowView(todo: todo)
+                    }
                 }
             }
             .navigationTitle("Todo List")
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    Button(action: {
+                    Button {
                         Task {
-                            
+                            await viewModel.createTodo(task: "")
                         }
-                    }) {
+                    } label: {
                         Image(systemName: "plus.circle.fill")
                             .fontWeight(.light)
                             .font(.system(size: 42))
