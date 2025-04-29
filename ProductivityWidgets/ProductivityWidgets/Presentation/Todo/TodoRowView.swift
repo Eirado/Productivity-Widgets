@@ -9,10 +9,10 @@ import SwiftUI
 
 struct TodoRowView: View {
     @Bindable var todo: Todo
-    @FocusState private var isRowActive: Bool
+//    @FocusState private var isRowActive: Bool
     @Environment(\.modelContext) private var context
     
-    @Bindable var contentModel: TodoViewModel
+    var deleteTodo: ()
     
     var body: some View {
         HStack(spacing: 8) {
@@ -29,17 +29,17 @@ struct TodoRowView: View {
             TextField("Record Video", text: $todo.task)
                 .strikethrough(todo.isCompleted)
                 .foregroundStyle(todo.isCompleted ? .gray : .primary)
-                .focused($isRowActive)
+//                .focused($isRowActive)
         }
         .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 10))
-        .animation(.snappy, value: isRowActive)
+//        .animation(.snappy, value: isRowActive)
         .onAppear {
-            isRowActive = todo.task.isEmpty
+//            isRowActive = todo.task.isEmpty
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button("", systemImage: "trash") {
                 Task {
-                    await contentModel.deleteTodo(todo: todo)
+                    deleteTodo
                 }
             }
             .tint(.red)
@@ -47,7 +47,7 @@ struct TodoRowView: View {
         .onSubmit(of: .text) {
             if todo.task.isEmpty {
                 Task {
-                    await contentModel.deleteTodo(todo: todo)
+                    deleteTodo
                 }
             }
         }

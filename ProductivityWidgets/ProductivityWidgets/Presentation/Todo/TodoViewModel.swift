@@ -9,29 +9,25 @@ import Foundation
 import SwiftUI
 
 @Observable
-class TodoViewModel: ObservableObject {
-    
+class TodoViewModel {
+
     var todos: [Todo] = []
 
     private let todoRepository: TodoRepositoryProtocol
     init(todoRepository: TodoRepositoryProtocol) {
         self.todoRepository = todoRepository
-        
+
         Task {
 //            try await todoRepository.deleteAllTodos()
-            await loadActiveTodos()
+            await loadAllTodos()
         }
-        
-        
     }
-    
+
     public var activeTodosCount: String {
-        get {
             let count = todos.count
             return "(\(count))"
-        }
     }
-    
+
     public func createTodo(task: String) async {
         do {
             let newTodo = try await todoRepository.createTodo(task: task)
@@ -43,34 +39,22 @@ class TodoViewModel: ObservableObject {
         } catch {
         }
     }
-    
-    public func deleteTodo(todo: Todo) async {
-        do {
-            let deletedTodo = try await todoRepository.deleteTodo(todo: todo)
-            await MainActor.run {
-                withAnimation(.snappy) {
-                    self.todos.removeAll { $0.id == todo.id }
-                }
-            }
-        } catch{
-        }
-    }
 
-    public func loadActiveTodos() async {
+    public func deleteTodo(todo: Todo, index: Int) async {
         do {
-            let loadedTodos = try await todoRepository.fetchUncompletedTodos()
+            _ = try await todoRepository.deleteTodo(todo: todo)
             await MainActor.run {
                 withAnimation(.snappy) {
-                    self.todos = loadedTodos
+                    self.todos.remove(at: index)
                 }
             }
         } catch {
         }
     }
 
-    public func loadRecentTodos() async {
+    public func loadAllTodos() async {
         do {
-            let loadedTodos = try await todoRepository.fetchUncompletedTodos()
+            let loadedTodos = try await todoRepository.fetchAllTodos()
             await MainActor.run {
                 withAnimation(.snappy) {
                     self.todos = loadedTodos

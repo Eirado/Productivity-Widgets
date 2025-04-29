@@ -54,9 +54,9 @@ final class TodoRepository: TodoRepositoryProtocol {
     }
 
     public func deleteAllTodos() async throws {
-            guard let context = context else {
-                throw PersistenceError.contextError
-            }
+        guard let context = context else {
+            throw PersistenceError.contextError
+        }
             let fetchDescriptor = FetchDescriptor<Todo>(predicate: #Predicate<Todo> { _ in true })
             let todos = try context.fetch(fetchDescriptor)
             for todo in todos {
