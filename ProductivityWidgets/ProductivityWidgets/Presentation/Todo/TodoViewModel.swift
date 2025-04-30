@@ -19,7 +19,7 @@ class TodoViewModel {
 
     public func createTodo(task: String) async {
         do {
-            let newTodo = try await todoRepository.createTodo(task: task)
+            _ = try await todoRepository.createTodo(task: task)
         } catch {
         }
     }

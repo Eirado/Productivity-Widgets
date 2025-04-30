@@ -7,6 +7,9 @@
 import SwiftUI
 import SwiftData
 
+
+
+
 struct TodoView: View, SizedViewProtocol {
     var size: CGSize
     var safeArea: EdgeInsets
@@ -15,6 +18,7 @@ struct TodoView: View, SizedViewProtocol {
     
     @State private var focusedTodoID: UUID? = nil
     @FocusState private var focusedField: UUID?
+    @State var isAddingTodo: Bool = false
     
     @Query(
         sort: [
@@ -31,25 +35,36 @@ struct TodoView: View, SizedViewProtocol {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(todos) { todo in
-                    TodoRowView(todo: todo)
+            ZStack {
+                List {
+                    ForEach(todos) { todo in
+                        TodoRowView(todo: todo)
+                            .id(todo.id)
+                            .listRowSeparator(.hidden)
+                    }
+                    .animation(.snappy, value: todos)
                 }
-            }
-            .animation(.snappy, value: todos)
-            .navigationTitle("Todo List")
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
-                        Task {
-                            await viewModel.createTodo(task: "")
+                .listStyle(.plain)
+                .scrollIndicators(.hidden)
+                .navigationTitle("Todo List")
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button {
+
+                            isAddingTodo = true
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                                .fontWeight(.light)
+                                .font(.system(size: 42))
                         }
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .fontWeight(.light)
-                            .font(.system(size: 42))
                     }
                 }
+            }
+        }.sheet(isPresented: $isAddingTodo) {
+            withAnimation(.snappy) {
+                AddTodoSheetView(height: size.height * 0.2)
             }
         }
     }
