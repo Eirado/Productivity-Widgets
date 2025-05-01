@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
-
+// SHOULD GET BIGGER WHEN HAS A BIT TEXT
+// SHOULD BE EDITED WITH A SHEET
 struct TodoRowView: View {
-    
+
     @Bindable var todo: Todo
     @Environment(\.modelContext) private var context
     
@@ -26,7 +27,7 @@ struct TodoRowView: View {
                     .foregroundStyle(todo.isCompleted ? .gray : .primary)
                 
             }
-            TextField("", text: $todo.task)
+            TextField("", text: $todo.task, axis: .vertical)
                 .strikethrough(todo.isCompleted)
                 .foregroundStyle(todo.isCompleted ? .gray : .primary)
                 .onSubmit {

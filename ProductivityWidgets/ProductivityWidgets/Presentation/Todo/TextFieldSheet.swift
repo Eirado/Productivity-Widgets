@@ -10,7 +10,7 @@ import SwiftUI
 struct AddTodoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var text: String = ""
-    @State private var viewModel: TodoViewModel
+    weak private var viewModel: TodoViewModel?
     private var sheetHeight: CGFloat
     
     init(height: CGFloat, viewModel: TodoViewModel) {
@@ -36,6 +36,9 @@ struct AddTodoSheetView: View {
             HStack {
                 Spacer()
                 Button("Add Task") {
+                    guard let viewModel = viewModel else {
+                        return
+                    }
                     Task {
                         await viewModel.createTodo(task: text)
                     }

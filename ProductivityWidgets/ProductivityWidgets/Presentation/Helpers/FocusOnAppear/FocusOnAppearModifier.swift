@@ -1,6 +1,5 @@
 import SwiftUI
 
-#if os(iOS)
 
 struct FocusOnAppearModifier<Value>: ViewModifier where Value: Hashable {
 
@@ -33,7 +32,6 @@ struct FocusOnAppearModifier<Value>: ViewModifier where Value: Hashable {
     }
 }
 
-#endif
 
 struct FocusOnAppearModifierWithoutCondition: ViewModifier {
 
@@ -45,7 +43,6 @@ struct FocusOnAppearModifierWithoutCondition: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        #if os(iOS)
         return ZStack {
             FirstResponderFieldView(config)
                 .frame(width: 0, height: 0)
@@ -59,12 +56,5 @@ struct FocusOnAppearModifierWithoutCondition: ViewModifier {
                     isFocused = true
                 }
         }
-        #else
-        return content
-            .focused($isFocused)
-            .onAppear {
-                isFocused = true
-            }
-        #endif
     }
 }

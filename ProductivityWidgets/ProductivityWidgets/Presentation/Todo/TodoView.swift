@@ -4,16 +4,18 @@
 //
 //  Created by Gabriel Amaral on 24/04/25.
 //
+
+
 import SwiftUI
 import SwiftData
 
 struct TodoView: View, SizedViewProtocol {
     var size: CGSize
     var safeArea: EdgeInsets
-    
     @State private var viewModel: TodoViewModel
     @State var isAddingTodo: Bool = false
     
+    // Refactor to only the viewModel have acess
     @Query(
         sort: [
             SortDescriptor(\Todo.isCompleted, order: .forward),
@@ -30,17 +32,26 @@ struct TodoView: View, SizedViewProtocol {
     var body: some View {
         NavigationStack {
             ZStack {
-                List {
-                    ForEach(todos) { todo in
-                        TodoRowView(todo: todo)
-                            .id(todo.id)
-                            .listRowSeparator(.hidden)
+                ScrollViewReader { proxy in
+                    List {
+                        ForEach(todos) { todo in
+                            TodoRowView(todo: todo)
+                                .id(todo.id)
+                                .listRowSeparator(.hidden)
+                        }
                     }
-                    .animation(.snappy, value: todos)
+                    .animation(.smooth, value: todos)
+                    .listStyle(.plain)
+                    .scrollIndicators(.hidden)
+                    .onChange(of: viewModel.lastAddedTodoID) { _, newId in
+                       
+                        withAnimation(.smooth(duration: 0.3).delay(0.1)) {
+                            proxy.scrollTo(newId, anchor: .bottom)
+                            }
+                        
+                    }
                 }
-                .listStyle(.plain)
-                .scrollIndicators(.hidden)
-                .navigationTitle("Todo List")
+                
                 VStack {
                     Spacer()
                     HStack {
@@ -55,15 +66,18 @@ struct TodoView: View, SizedViewProtocol {
                     }
                     .padding(.horizontal)
                 }
+                
             }
-        }
-        .sheet(isPresented: $isAddingTodo) {
-            withAnimation(.snappy) {
-                AddTodoSheetView(height: size.height * 0.28, viewModel: viewModel)
+            .sheet(isPresented: $isAddingTodo) {
+                withAnimation(.snappy) {
+                    AddTodoSheetView(height: size.height * 0.28, viewModel: viewModel)
+                }
             }
+            .navigationTitle("Todo List")
         }
     }
 }
+
 
 #Preview {
     TodoViewFactory.makeTodoView(
