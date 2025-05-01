@@ -7,17 +7,11 @@
 import SwiftUI
 import SwiftData
 
-
-
-
 struct TodoView: View, SizedViewProtocol {
     var size: CGSize
     var safeArea: EdgeInsets
     
     @State private var viewModel: TodoViewModel
-    
-    @State private var focusedTodoID: UUID? = nil
-    @FocusState private var focusedField: UUID?
     @State var isAddingTodo: Bool = false
     
     @Query(
@@ -52,7 +46,6 @@ struct TodoView: View, SizedViewProtocol {
                     HStack {
                         Spacer()
                         Button {
-
                             isAddingTodo = true
                         } label: {
                             Image(systemName: "plus.circle.fill")
@@ -60,11 +53,13 @@ struct TodoView: View, SizedViewProtocol {
                                 .font(.system(size: 42))
                         }
                     }
+                    .padding(.horizontal)
                 }
             }
-        }.sheet(isPresented: $isAddingTodo) {
+        }
+        .sheet(isPresented: $isAddingTodo) {
             withAnimation(.snappy) {
-                AddTodoSheetView(height: size.height * 0.2)
+                AddTodoSheetView(height: size.height * 0.28, viewModel: viewModel)
             }
         }
     }

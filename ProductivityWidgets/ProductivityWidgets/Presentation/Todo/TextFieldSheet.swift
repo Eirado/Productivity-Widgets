@@ -10,37 +10,44 @@ import SwiftUI
 struct AddTodoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var text: String = ""
-    @FocusState private var isTextFieldFocused: Bool
-    private var height: CGFloat
+    @State private var viewModel: TodoViewModel
+    private var sheetHeight: CGFloat
     
-    init(height: CGFloat) {
-        self.height = height
+    init(height: CGFloat, viewModel: TodoViewModel) {
+        self.sheetHeight = height
+        self.viewModel = viewModel
     }
     
     var body: some View {
         VStack {
-            TextField("Enter task...", text: $text)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-                .onSubmit {
-                    dismiss()
-                }
-                .focusOnAppear()
+            VStack{
+                TextField("Enter task...", text: $text, axis: .vertical)
+                    .padding(.horizontal)
+                    .padding(.vertical)
+                    .frame(minHeight: sheetHeight * 0.5)
+                    .background(Color(.systemGray6))
+                    .multilineTextAlignment(.leading)
+                    .onSubmit {
+                        dismiss()
+                    }
+                    .focusOnAppear()
+            }
+            Spacer()
             HStack {
                 Spacer()
                 Button("Add Task") {
-                    
+                    Task {
+                        await viewModel.createTodo(task: text)
+                    }
+                    dismiss()
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
             .padding(.bottom)
             .padding(.horizontal)
         }
-        .presentationDetents([.height(height)])
+        .presentationDetents([.height(sheetHeight)])
         .presentationBackgroundInteraction(.enabled)
         .presentationCornerRadius(15)
-
     }
 }
