@@ -11,7 +11,7 @@ import SwiftUI
 @main
 struct TodoBundle: WidgetBundle {
     var body: some Widget {
-        Todo()
+        TodoWidget()
         TodoControl()
     }
 }

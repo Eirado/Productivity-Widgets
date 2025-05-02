@@ -37,6 +37,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		382C81BB2DC559AC000FDBA6 /* TodoExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodoExtension.entitlements; sourceTree = "<group>"; };
 		38AA06B82DBA81FF00135AC4 /* ProductivityWidgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProductivityWidgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38AA070D2DBA8A2C00135AC4 /* TodoExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TodoExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		38AA070F2DBA8A2C00135AC4 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -44,6 +45,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		382C81B92DC5541B000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "TodoExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Presentation/Helpers/Extensions/BoolWorkArround.swift,
+				Presentation/Todo/TodoMoldel.swift,
+			);
+			target = 38AA070C2DBA8A2C00135AC4 /* TodoExtension */;
+		};
 		38AA07242DBA8A2E00135AC4 /* Exceptions for "TodoWidget" folder in "TodoExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -56,6 +65,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		38AA06BA2DBA81FF00135AC4 /* ProductivityWidgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				382C81B92DC5541B000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "TodoExtension" target */,
+			);
 			path = ProductivityWidgets;
 			sourceTree = "<group>";
 		};
@@ -92,6 +104,7 @@
 		38AA06AF2DBA81FF00135AC4 = {
 			isa = PBXGroup;
 			children = (
+				382C81BB2DC559AC000FDBA6 /* TodoExtension.entitlements */,
 				38AA06BA2DBA81FF00135AC4 /* ProductivityWidgets */,
 				38AA07132DBA8A2C00135AC4 /* TodoWidget */,
 				38AA070E2DBA8A2C00135AC4 /* Frameworks */,
@@ -373,6 +386,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ProductivityWidgets/ProductivityWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ProductivityWidgets/Preview Content\"";
@@ -408,6 +422,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ProductivityWidgets/ProductivityWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ProductivityWidgets/Preview Content\"";
@@ -443,6 +458,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TodoExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6FXWX5Z987;
@@ -470,6 +486,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TodoExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6FXWX5Z987;
