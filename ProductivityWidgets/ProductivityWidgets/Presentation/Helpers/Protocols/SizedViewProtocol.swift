@@ -8,6 +8,6 @@
 import SwiftUI
 
 protocol SizedViewProtocol {
-    var size: CGSize { get }
-    var safeArea: EdgeInsets { get }
+    var screenSize: CGSize { get }
+    var screenSafeAreas: EdgeInsets { get }
 }

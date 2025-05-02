@@ -10,8 +10,8 @@ import SwiftUI
 import SwiftData
 
 struct TodoView: View, SizedViewProtocol {
-    var size: CGSize
-    var safeArea: EdgeInsets
+    var screenSize: CGSize
+    var screenSafeAreas: EdgeInsets
     @State private var viewModel: TodoViewModel
     @State var isAddingTodo: Bool = false
     
@@ -24,14 +24,15 @@ struct TodoView: View, SizedViewProtocol {
     ) private var todos: [Todo]
     
     init(size: CGSize, safeArea: EdgeInsets, viewModel: TodoViewModel) {
-        self.size = size
-        self.safeArea = safeArea
+        self.screenSize = size
+        self.screenSafeAreas = safeArea
         self.viewModel = viewModel
     }
     
     var body: some View {
         NavigationStack {
             ZStack {
+                Color(.black)
                 ScrollViewReader { proxy in
                     List {
                         ForEach(todos) { todo in
@@ -44,40 +45,24 @@ struct TodoView: View, SizedViewProtocol {
                     .listStyle(.plain)
                     .scrollIndicators(.hidden)
                     .onChange(of: viewModel.lastAddedTodoID) { _, newId in
-                       
-                        withAnimation(.smooth(duration: 0.3).delay(0.1)) {
+                        withAnimation(.smooth(duration: 0.3).delay(0.2)) {
                             proxy.scrollTo(newId, anchor: .bottom)
-                            }
-                        
-                    }
-                }
-                
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button {
-                            isAddingTodo = true
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .fontWeight(.light)
-                                .font(.system(size: 42))
                         }
                     }
-                    .padding(.horizontal)
                 }
                 
+                TodoViewButton(isAddingTodo: $isAddingTodo, screenSize: screenSize)
             }
+            .sensoryFeedback(.success, trigger: todos)
             .sheet(isPresented: $isAddingTodo) {
                 withAnimation(.snappy) {
-                    AddTodoSheetView(height: size.height * 0.28, viewModel: viewModel)
+                    AddTodoSheetView(height: screenSize.height * 0.28, viewModel: viewModel)
                 }
             }
             .navigationTitle("Todo List")
         }
     }
 }
-
 
 #Preview {
     TodoViewFactory.makeTodoView(

@@ -32,7 +32,7 @@ struct TodoRowView: View {
                 .foregroundStyle(todo.isCompleted ? .gray : .primary)
                 .onSubmit {
                     if todo.task.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        withAnimation(.snappy) {
+                        withAnimation(.smooth) {
                         context.delete(todo)
                         }
                     }
@@ -41,9 +41,7 @@ struct TodoRowView: View {
         .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 10))
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button("", systemImage: "trash") {
-                withAnimation(.snappy) {
-                context.delete(todo)
-                }
+                    context.delete(todo)
             }
             .tint(.red)
         }
