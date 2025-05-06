@@ -66,7 +66,7 @@ struct TODOEntryView : View {
     static var todoDescriptor: FetchDescriptor<Todo> {
         let predicate = #Predicate<Todo> { _ in true }
         let sort = [SortDescriptor(\Todo.isCompleted, order: .forward),
-                     SortDescriptor(\Todo.lastModified, order: .forward)
+                    SortDescriptor(\Todo.lastModified, order: .forward)
         ]
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
         
@@ -77,11 +77,13 @@ struct TODOEntryView : View {
 struct TodoWidget: Widget {
     let kind: String = "TODO"
     
+    private let provider = ModelContainerProvider(useSharedStorage: true)
+    
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
             TODOEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
-                .modelContainer(ModelContainerProvider.shared.container)
+                .modelContainer(provider.container)
         }
         .supportedFamilies([.systemMedium, .systemLarge])
     }
@@ -104,9 +106,11 @@ extension ConfigurationAppIntent {
 
 struct toogleTodoTask: AppIntent {
     static var title: LocalizedStringResource = .init(stringLiteral: "Toggle's Todo State")
-
+    
     @Parameter(title: "Todo ID")
     var id: String
+    
+    @Environment(\.modelContext) private var context: ModelContext
     
     init() {
         
@@ -118,9 +122,9 @@ struct toogleTodoTask: AppIntent {
     
     func perform() async throws -> some IntentResult {
         
-        let context = await ModelContainerProvider.shared.context
-        
-        let descriptor = FetchDescriptor(predicate: #Predicate<Todo> { $0.taskID == id })
+        let descriptor = FetchDescriptor<Todo>(
+            predicate: #Predicate { $0.taskID == id }
+        )
         
         if let todo = try context.fetch(descriptor).first {
             todo.isCompleted.toggle()
