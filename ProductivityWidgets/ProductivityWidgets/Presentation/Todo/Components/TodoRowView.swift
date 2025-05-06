@@ -32,6 +32,7 @@ struct TodoRowView: View {
             TextField("", text: $todo.task, axis: .vertical)
                 .strikethrough(todo.isCompleted)
                 .foregroundStyle(todo.isCompleted ? .gray : .primary)
+                .font(.interItalic(size: 21))
                 .onSubmit {
                     if todo.task.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         withAnimation(.smooth) {
@@ -52,10 +53,10 @@ struct TodoRowView: View {
     }
 }
 
-//#Preview {
-//    TodoViewFactory.makeTodoView(
-//        size: DevicePreview.iPhone16Pro.size,
-//        safeArea: DevicePreview.iPhone16Pro.safeArea,
-//        context: ModelContainerProvider().context
-//    )
-//}
+#Preview {
+    TodoViewFactory.makeTodoView(
+        size: DevicePreview.iPhone16Pro.size,
+        safeArea: DevicePreview.iPhone16Pro.safeArea,
+        context: ModelContainerProvider.shared.modelContainer.mainContext
+    )
+}

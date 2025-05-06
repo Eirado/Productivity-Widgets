@@ -16,7 +16,7 @@ struct TodoWidgetRowView: View {
                     .strikethrough(todo.isCompleted)
                     .lineLimit(1)
                     .foregroundColor(.white)
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.custom("InterBold", size: 20))
                     .padding(.horizontal, -15)
             }
             .buttonStyle(.borderless)

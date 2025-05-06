@@ -64,10 +64,10 @@ struct TodoView: View, SizedViewProtocol {
     }
 }
 
-//#Preview {
-//    TodoViewFactory.makeTodoView(
-//        size: DevicePreview.iPhone16Pro.size,
-//        safeArea: DevicePreview.iPhone16Pro.safeArea,
-//        context: ModelContainerProvider().context
-//    )
-//}
+#Preview {
+    TodoViewFactory.makeTodoView(
+        size: DevicePreview.iPhone16Pro.size,
+        safeArea: DevicePreview.iPhone16Pro.safeArea,
+        context: ModelContainerProvider.shared.modelContainer.mainContext
+    )
+}

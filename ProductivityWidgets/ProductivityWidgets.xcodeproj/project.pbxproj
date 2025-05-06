@@ -49,10 +49,78 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DataLayer/ModelContainerProvider.swift,
+				"Fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf",
+				"Fonts/Inter/Inter-VariableFont_opsz,wght.ttf",
+				Fonts/Inter/OFL.txt,
+				Fonts/Inter/README.txt,
+				"Fonts/Inter/static/Inter_18pt-Black.ttf",
+				"Fonts/Inter/static/Inter_18pt-BlackItalic.ttf",
+				"Fonts/Inter/static/Inter_18pt-Bold.ttf",
+				"Fonts/Inter/static/Inter_18pt-BoldItalic.ttf",
+				"Fonts/Inter/static/Inter_18pt-ExtraBold.ttf",
+				"Fonts/Inter/static/Inter_18pt-ExtraBoldItalic.ttf",
+				"Fonts/Inter/static/Inter_18pt-ExtraLight.ttf",
+				"Fonts/Inter/static/Inter_18pt-ExtraLightItalic.ttf",
+				"Fonts/Inter/static/Inter_18pt-Italic.ttf",
+				"Fonts/Inter/static/Inter_18pt-Light.ttf",
+				"Fonts/Inter/static/Inter_18pt-LightItalic.ttf",
+				"Fonts/Inter/static/Inter_18pt-Medium.ttf",
+				"Fonts/Inter/static/Inter_18pt-MediumItalic.ttf",
+				"Fonts/Inter/static/Inter_18pt-Regular.ttf",
+				"Fonts/Inter/static/Inter_18pt-SemiBold.ttf",
+				"Fonts/Inter/static/Inter_18pt-SemiBoldItalic.ttf",
+				"Fonts/Inter/static/Inter_18pt-Thin.ttf",
+				"Fonts/Inter/static/Inter_18pt-ThinItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-Black.ttf",
+				"Fonts/Inter/static/Inter_24pt-BlackItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-Bold.ttf",
+				"Fonts/Inter/static/Inter_24pt-BoldItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-ExtraBold.ttf",
+				"Fonts/Inter/static/Inter_24pt-ExtraBoldItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-ExtraLight.ttf",
+				"Fonts/Inter/static/Inter_24pt-ExtraLightItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-Italic.ttf",
+				"Fonts/Inter/static/Inter_24pt-Light.ttf",
+				"Fonts/Inter/static/Inter_24pt-LightItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-Medium.ttf",
+				"Fonts/Inter/static/Inter_24pt-MediumItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-Regular.ttf",
+				"Fonts/Inter/static/Inter_24pt-SemiBold.ttf",
+				"Fonts/Inter/static/Inter_24pt-SemiBoldItalic.ttf",
+				"Fonts/Inter/static/Inter_24pt-Thin.ttf",
+				"Fonts/Inter/static/Inter_24pt-ThinItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-Black.ttf",
+				"Fonts/Inter/static/Inter_28pt-BlackItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-Bold.ttf",
+				"Fonts/Inter/static/Inter_28pt-BoldItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-ExtraBold.ttf",
+				"Fonts/Inter/static/Inter_28pt-ExtraBoldItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-ExtraLight.ttf",
+				"Fonts/Inter/static/Inter_28pt-ExtraLightItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-Italic.ttf",
+				"Fonts/Inter/static/Inter_28pt-Light.ttf",
+				"Fonts/Inter/static/Inter_28pt-LightItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-Medium.ttf",
+				"Fonts/Inter/static/Inter_28pt-MediumItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-Regular.ttf",
+				"Fonts/Inter/static/Inter_28pt-SemiBold.ttf",
+				"Fonts/Inter/static/Inter_28pt-SemiBoldItalic.ttf",
+				"Fonts/Inter/static/Inter_28pt-Thin.ttf",
+				"Fonts/Inter/static/Inter_28pt-ThinItalic.ttf",
 				Presentation/Helpers/Extensions/BoolWorkArround.swift,
+				"Presentation/Helpers/Extensions/SwiftUI+Fonts.swift",
 				Presentation/Todo/TodoMoldel.swift,
 			);
 			target = 38AA070C2DBA8A2C00135AC4 /* TodoExtension */;
+		};
+		382C83562DCA9BA8000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "ProductivityWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				App/Assets.xcassets,
+				Info.plist,
+				"Preview Content/Preview Assets.xcassets",
+			);
+			target = 38AA06B72DBA81FF00135AC4 /* ProductivityWidgets */;
 		};
 		38AA07242DBA8A2E00135AC4 /* Exceptions for "TodoWidget" folder in "TodoExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -67,6 +135,7 @@
 		38AA06BA2DBA81FF00135AC4 /* ProductivityWidgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				382C83562DCA9BA8000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "ProductivityWidgets" target */,
 				382C81B92DC5541B000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "TodoExtension" target */,
 			);
 			path = ProductivityWidgets;
@@ -394,13 +463,14 @@
 				DEVELOPMENT_TEAM = 6FXWX5Z987;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ProductivityWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Productivity: Widgets";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -430,13 +500,14 @@
 				DEVELOPMENT_TEAM = 6FXWX5Z987;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ProductivityWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Productivity: Widgets";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -476,9 +547,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Gabriel.ProductivityWidgets.Todo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -504,9 +579,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Gabriel.ProductivityWidgets.Todo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
