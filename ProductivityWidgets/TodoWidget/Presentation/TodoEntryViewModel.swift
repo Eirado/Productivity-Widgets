@@ -6,10 +6,17 @@
 //
 
 import SwiftData
+import Foundation
 
-final class TodoEntryViewModel {
-    
+
+final class TodoEntryViewModel: ObservableObject {
     public func todoFetchDescrpitor() -> FetchDescriptor<Todo> {
+        let predicate = #Predicate<Todo> { _ in true }
+        let sort = [SortDescriptor(\Todo.isCompleted, order: .forward),
+                    SortDescriptor(\Todo.lastModified, order: .forward)
+        ]
+        let descriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
         
+        return descriptor
     }
 }

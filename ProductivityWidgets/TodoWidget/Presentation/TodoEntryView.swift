@@ -10,8 +10,12 @@ import SwiftData
 
 
 struct TodoEntryView : View {
+    @StateObject private var viewModel = TodoEntryViewModel()
+    @Query private var todos: [Todo]
     
-    @Query(todoDescriptor, animation: .snappy) private var todos: [Todo]
+    init() {
+        _todos = Query(viewModel.todoFetchDescrpitor(), animation: .snappy)
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 25) {
@@ -21,14 +25,5 @@ struct TodoEntryView : View {
             Spacer()
         }
         .containerBackground(.black, for: .widget)
-    }
-    static var todoDescriptor: FetchDescriptor<Todo> {
-        let predicate = #Predicate<Todo> { _ in true }
-        let sort = [SortDescriptor(\Todo.isCompleted, order: .forward),
-                    SortDescriptor(\Todo.lastModified, order: .forward)
-        ]
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
-        
-        return descriptor
     }
 }
