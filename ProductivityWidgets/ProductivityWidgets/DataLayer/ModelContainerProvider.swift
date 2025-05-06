@@ -8,35 +8,20 @@
 import SwiftData
 import Foundation
 
-@MainActor
-final class ModelContainerProvider {
-    public let container: ModelContainer
-    public let context: ModelContext
+actor ModelContainerProvider {
+
+    static let shared = ModelContainerProvider()
+    private init() {}
     
-    init(useSharedStorage: Bool = false) {
+    nonisolated lazy var modelContainer: ModelContainer = {
+        let modelContainer: ModelContainer
         do {
-            if useSharedStorage {
-                let appGroupID = "group.GabrielEirado.widgets"
-                guard let sharedURL = FileManager
-                    .default
-                    .containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
-                else {
-                    fatalError("Unable to access App Group container")
-                }
-                let url = sharedURL.appendingPathComponent("TodoModel.store")
-                let configuration = ModelConfiguration(url: url)
-                container = try ModelContainer(
-                    for: Todo.self,
-                    configurations: configuration
-                )
-            } else {
-                container = try ModelContainer(for: Todo.self)
-            }
-            context = container.mainContext
+            modelContainer = try ModelContainer(for: Todo.self)
         } catch {
-            fatalError("Failed to create ModelContainer: \(error)")
+            fatalError("Failed to create the model container: \(error)")
         }
-    }
+        return modelContainer
+    }()
 }
 
 

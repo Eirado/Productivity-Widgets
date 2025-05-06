@@ -52,10 +52,10 @@ struct TodoRowView: View {
     }
 }
 
-#Preview {
-    TodoViewFactory.makeTodoView(
-        size: DevicePreview.iPhone16Pro.size,
-        safeArea: DevicePreview.iPhone16Pro.safeArea,
-        context: ModelContainerProvider().context
-    )
-}
+//#Preview {
+//    TodoViewFactory.makeTodoView(
+//        size: DevicePreview.iPhone16Pro.size,
+//        safeArea: DevicePreview.iPhone16Pro.safeArea,
+//        context: ModelContainerProvider().context
+//    )
+//}

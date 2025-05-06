@@ -10,11 +10,10 @@ import SwiftData
 
 @main
 struct ProductivityWidgetsApp: App {
-    private var provider = ModelContainerProvider(useSharedStorage: true)
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContext(provider.context)
+                .modelContext(ModelContainerProvider.shared.modelContainer.mainContext)
         }
     }
 }
