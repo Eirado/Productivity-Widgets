@@ -7,6 +7,65 @@
 
 import SwiftUI
 
+struct ModifierContainer: View {
+    var body: some View {
+        Color.clear
+    }
+}
+
+
+protocol ButtonConfiguration {
+    var iconName: String { get }
+    var height: CGFloat { get }
+    var width: CGFloat { get }
+    var foregroundColor: Color { get }
+    var backgroundColor: Color { get }
+    var iconSize: CGFloat { get }
+    
+    // Animation properties
+    func getAnimationEffect(isPressed: Bool) -> AnyView
+}
+
+struct AddButtonConfiguration: ButtonConfiguration {
+    let height: CGFloat
+    let width: CGFloat
+    let foregroundColor: Color
+    let backgroundColor: Color
+    
+    // Default values
+    init(
+        height: CGFloat = 56,
+        width: CGFloat = .zero,
+        foregroundColor: Color = .black,
+        backgroundColor: Color = .white
+    ) {
+        self.height = height
+        self.width = width
+        self.foregroundColor = foregroundColor
+        self.backgroundColor = backgroundColor
+    }
+    
+    var iconName: String {
+        return "plus"
+    }
+    
+    var iconSize: CGFloat {
+        return height * 0.43
+    }
+    
+    func getAnimationEffect(isPressed: Bool) -> AnyView {
+        return AnyView(
+            ModifierContainer()
+                .scaleEffect(isPressed ? 0.8 : 1.0)
+                .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isPressed)
+        )
+    }
+}
+
+
+
+
+
 enum ButtonRank {
     case primary
 }
@@ -18,6 +77,8 @@ extension ButtonStyle where Self == CustomButtonStyle {
         height: CGFloat = .zero,
         screenSafaAreas: EdgeInsets = .init(.zero)
     ) -> CustomButtonStyle {
+        
+        
         
         CustomButtonStyle(rank: rank, width: width, height: height, screenSafaAreas: screenSafaAreas)
     }
@@ -50,6 +111,8 @@ struct CustomButtonStyle: ButtonStyle {
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
+
+
 
 struct buttonPreview: View {
     var body: some View {

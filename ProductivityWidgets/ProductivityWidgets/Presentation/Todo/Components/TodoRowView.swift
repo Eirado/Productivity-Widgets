@@ -32,7 +32,7 @@ struct TodoRowView: View {
             TextField("", text: $todo.task, axis: .vertical)
                 .strikethrough(todo.isCompleted)
                 .foregroundStyle(todo.isCompleted ? .gray : .primary)
-                .font(.interItalic(size: 21))
+                .font(.interItalic(fontweight: .regular, fontStyle: .body))
                 .onSubmit {
                     if todo.task.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         withAnimation(.smooth) {

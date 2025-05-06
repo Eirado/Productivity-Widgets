@@ -8,11 +8,11 @@
 import SwiftUI
 
 extension Font {
-    static func inter(fontStyle: Font.TextStyle = .body, fontweight: Weight = .regular) -> Font {
+    static func inter(fontweight: Weight = .regular, fontStyle: Font.TextStyle = .body) -> Font {
         return Font.custom(CustomFont(weight: fontweight).rawValue, size: fontStyle.size)
     }
     
-    static func interItalic(fontStyle: Font.TextStyle = .body, fontweight: Weight = .regular) -> Font {
+    static func interItalic(fontweight: Weight = .regular, fontStyle: Font.TextStyle = .body) -> Font {
         return Font.custom(CustomFontItalic(weight: fontweight).rawValue, size: fontStyle.size)
     }
 }

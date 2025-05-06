@@ -35,6 +35,6 @@ struct TodoWidget: Widget {
             TodoEntryView()
                 .modelContainer(ModelContainerProvider.shared.modelContainer)
         }
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .supportedFamilies([.systemLarge])
     }
 }

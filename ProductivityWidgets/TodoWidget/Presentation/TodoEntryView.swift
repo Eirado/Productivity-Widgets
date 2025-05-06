@@ -14,7 +14,7 @@ struct TodoEntryView : View {
     @Query private var todos: [Todo]
     
     init() {
-        _todos = Query(viewModel.todoFetchDescrpitor(), animation: .snappy)
+        _todos = Query(viewModel.todoFetchDescrpitor())
     }
     
     var body: some View {
@@ -25,5 +25,6 @@ struct TodoEntryView : View {
             Spacer()
         }
         .containerBackground(.black, for: .widget)
+        .padding(.horizontal, -10)
     }
 }

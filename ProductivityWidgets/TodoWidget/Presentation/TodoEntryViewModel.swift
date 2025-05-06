@@ -15,8 +15,8 @@ final class TodoEntryViewModel: ObservableObject {
         let sort = [SortDescriptor(\Todo.isCompleted, order: .forward),
                     SortDescriptor(\Todo.lastModified, order: .forward)
         ]
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
-        
+        var descriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
+        descriptor.fetchLimit = 7
         return descriptor
     }
 }
