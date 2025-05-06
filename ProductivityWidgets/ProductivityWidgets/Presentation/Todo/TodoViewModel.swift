@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 @Observable
 class TodoViewModel {
@@ -29,6 +30,7 @@ class TodoViewModel {
         do {
             let newTodo = try await todoRepository.createTodo(task: task)
             updateLastAddedTodoID(with: newTodo.id)
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
         }
     }
@@ -36,6 +38,7 @@ class TodoViewModel {
     public func deleteTodo(todo: Todo, index: Int) async {
         do {
             _ = try await todoRepository.deleteTodo(todo: todo)
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
         }
     }

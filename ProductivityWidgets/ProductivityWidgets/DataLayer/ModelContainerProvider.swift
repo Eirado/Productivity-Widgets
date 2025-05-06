@@ -6,14 +6,17 @@
 //
 
 import SwiftData
+import Foundation
 
 @MainActor
 final class ModelContainerProvider {
-    private let container: ModelContainer
+    public let container: ModelContainer
     public let context: ModelContext
-    init() {
+    
+    static let shared = ModelContainerProvider(useSharedStorage: true)
+    
+    init(useSharedStorage: Bool = false) {
         do {
-            
             container = try ModelContainer(for: Todo.self)
             context = container.mainContext
         } catch {
@@ -21,3 +24,4 @@ final class ModelContainerProvider {
         }
     }
 }
+

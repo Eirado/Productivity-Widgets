@@ -14,7 +14,7 @@ struct ProductivityWidgetsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContext(modelContainer.context)
+                .modelContext(ModelContainerProvider.shared.container.mainContext)
         }
     }
 }

@@ -1,17 +1,18 @@
 
 //  Created by Gabriel Amaral on 24/04/25.
-//
+
 
 import WidgetKit
 import SwiftUI
 import SwiftData
+import AppIntents
 
 struct Provider: AppIntentTimelineProvider {
     
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry()
     }
-
+    
     func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
         SimpleEntry()
     }
@@ -24,14 +25,26 @@ struct Provider: AppIntentTimelineProvider {
         
         let entry = SimpleEntry()
         entries.append(entry)
-
+        
         // never will refresh the
         return Timeline(entries: entries, policy: .never)
     }
+    
+    //    func relevances() async -> WidgetRelevances<ConfigurationAppIntent> {
+    //        // Generate a list containing the contexts this widget is relevant in.
+    //    }
+}
 
-//    func relevances() async -> WidgetRelevances<ConfigurationAppIntent> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
+struct TodoWidgetRowView: View {
+    @Bindable var todo: Todo
+    var body: some View {
+        HStack {
+            Button(intent: toogleTodoTask(id: todo.taskID)) {
+                Text(todo.task)
+                    .strikethrough(todo.isCompleted)
+            }
+        }
+    }
 }
 
 struct SimpleEntry: TimelineEntry {
@@ -45,31 +58,32 @@ struct TODOEntryView : View {
     
     var body: some View {
         VStack {
-           
+            ForEach(todos) { todo in
+                TodoWidgetRowView(todo: todo)
+            }
         }
     }
     static var todoDescriptor: FetchDescriptor<Todo> {
         let predicate = #Predicate<Todo> { _ in true }
-        let sort =  [SortDescriptor(\Todo.isCompleted, order: .forward),
-            SortDescriptor(\Todo.lastModified, order: .forward)
+        let sort = [SortDescriptor(\Todo.isCompleted, order: .forward),
+                     SortDescriptor(\Todo.lastModified, order: .forward)
         ]
+        let descriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
         
-        var descriptor = FetchDescriptor(predicate: predicate, sortBy: sort)
-        descriptor.fetchLimit = 3
         return descriptor
     }
 }
 
 struct TodoWidget: Widget {
     let kind: String = "TODO"
-
+    
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
             TODOEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
-            
-                .modelContainer(for: Todo.self)
+                .modelContainer(ModelContainerProvider.shared.container)
         }
+        .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
 
@@ -81,8 +95,39 @@ extension ConfigurationAppIntent {
     }
 }
 
+
 #Preview(as: .systemSmall) {
     TodoWidget()
 } timeline: {
     SimpleEntry()
+}
+
+struct toogleTodoTask: AppIntent {
+    static var title: LocalizedStringResource = .init(stringLiteral: "Toggle's Todo State")
+
+    @Parameter(title: "Todo ID")
+    var id: String
+    
+    init() {
+        
+    }
+    
+    init(id: String) {
+        self.id = id
+    }
+    
+    func perform() async throws -> some IntentResult {
+        
+        let context = await ModelContainerProvider.shared.context
+        
+        let descriptor = FetchDescriptor(predicate: #Predicate<Todo> { $0.taskID == id })
+        
+        if let todo = try context.fetch(descriptor).first {
+            todo.isCompleted.toggle()
+            try context.save()
+        }
+        
+        WidgetCenter.shared.reloadAllTimelines()
+        return .result()
+    }
 }

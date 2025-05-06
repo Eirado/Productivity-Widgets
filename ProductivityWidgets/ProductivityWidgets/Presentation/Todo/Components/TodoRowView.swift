@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 // SHOULD GET BIGGER WHEN HAS A BIT TEXT
 // SHOULD BE EDITED WITH A SHEET
 struct TodoRowView: View {
@@ -18,6 +19,7 @@ struct TodoRowView: View {
             Button {
                 withAnimation(.snappy) {
                     todo.isCompleted.toggle()
+                    WidgetCenter.shared.reloadAllTimelines()
                 }
             } label: {
                 Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
@@ -35,6 +37,7 @@ struct TodoRowView: View {
                         withAnimation(.smooth) {
                         context.delete(todo)
                         }
+                        WidgetCenter.shared.reloadAllTimelines()
                     }
                 }
         }
@@ -42,6 +45,7 @@ struct TodoRowView: View {
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button("", systemImage: "trash") {
                     context.delete(todo)
+                WidgetCenter.shared.reloadAllTimelines()
             }
             .tint(.red)
         }

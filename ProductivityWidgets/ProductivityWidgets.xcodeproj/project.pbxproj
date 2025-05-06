@@ -48,6 +48,7 @@
 		382C81B92DC5541B000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "TodoExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				DataLayer/ModelContainerProvider.swift,
 				Presentation/Helpers/Extensions/BoolWorkArround.swift,
 				Presentation/Todo/TodoMoldel.swift,
 			);
