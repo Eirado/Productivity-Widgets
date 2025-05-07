@@ -50,13 +50,12 @@ struct TodoView: View, SizedViewProtocol {
                         }
                     }
                 }
-                
                 TodoViewButton(isAddingTodo: $isAddingTodo, screenSize: screenSize)
             }
             .sensoryFeedback(.success, trigger: todos)
             .sheet(isPresented: $isAddingTodo) {
                 withAnimation(.snappy) {
-                    AddTodoSheetView(height: screenSize.height * 0.28, viewModel: viewModel)
+                    AddTodoSheetView(height: screenSize.height * 0.28, screenWidth: screenSize.width, addTask: { text in await viewModel.createTodo(task: text) })
                 }
             }
             .navigationTitle("Todo List")

@@ -23,7 +23,7 @@ struct TodoViewButton: View {
                   
                 }
                 .sensoryFeedback(.impact(flexibility: .solid), trigger: trigger)
-                .buttonStyle(.customStyle(rank: .primary, height: screenSize.width * 0.18))
+                .buttonStyle(.customStyle(rank: .primary, width: screenSize.width * 0.18))
                 .padding(.vertical)
                 .padding(.horizontal, 20)
             }

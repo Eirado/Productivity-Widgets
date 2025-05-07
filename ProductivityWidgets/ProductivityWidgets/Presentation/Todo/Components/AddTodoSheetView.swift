@@ -10,12 +10,14 @@ import SwiftUI
 struct AddTodoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var text: String = ""
-    weak private var viewModel: TodoViewModel?
+    private let createTodo: (String) async -> Void
     private var sheetHeight: CGFloat
+    private let screenWidth: CGFloat
     
-    init(height: CGFloat, viewModel: TodoViewModel) {
+    init(height: CGFloat, screenWidth: CGFloat, addTask: @escaping (String) async -> Void) {
         self.sheetHeight = height
-        self.viewModel = viewModel
+        self.createTodo = addTask
+        self.screenWidth = screenWidth
     }
     
     var body: some View {
@@ -35,16 +37,13 @@ struct AddTodoSheetView: View {
             Spacer()
             HStack {
                 Spacer()
-                Button("Add Task") {
-                    guard let viewModel = viewModel else {
-                        return
-                    }
+                Button {
                     Task {
-                        await viewModel.createTodo(task: text)
+                        await createTodo(text)
                     }
                     dismiss()
-                }
-                .buttonStyle(.borderedProminent)
+                } label: {  }
+                    .buttonStyle(.customStyle(rank: .sendLoading, width: screenWidth * 0.12))
             }
             .padding(.bottom)
             .padding(.horizontal)

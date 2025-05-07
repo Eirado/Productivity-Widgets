@@ -9,6 +9,7 @@ import SwiftUI
 
 enum ButtonRank {
     case primary
+    case sendLoading
 }
 
 struct ButtonStyleConfig {
@@ -36,6 +37,20 @@ struct ButtonStyleConfig {
                 borderWidth: 0,
                 isCircular: true
             )
+        case .sendLoading:
+            return ButtonStyleConfig(
+                backgroundColor: .white,
+                foregroundColor: .black,
+                cornerRadius: 0,
+                pressedScale: 0.8,
+                pressedOpacity: 1,
+                font: .headline,
+                borderColor: nil,
+                borderWidth: 0,
+                isCircular: true
+            )
+            
+        
         }
     }
 }
@@ -95,6 +110,31 @@ private extension CustomButtonStyle {
     }
 }
 
+private extension CustomButtonStyle {
+    @ViewBuilder
+    static func sendButtonDumping(
+        configuration: ButtonStyleConfiguration,
+        config: ButtonStyleConfig,
+        width: CGFloat
+    ) -> some View {
+        configuration.label
+        ZStack {
+            Circle()
+                .fill(config.backgroundColor)
+                .frame(width: width, height: width)
+            if configuration.isPressed {
+                ProgressView()
+                    .tint(config.foregroundColor)
+            } else {
+                Image(systemName: "arrow.up")
+                    .font(.system(size: width * 0.43, weight: .bold))
+                    .foregroundColor(config.foregroundColor)
+            }
+        }
+        .scaleEffect(configuration.isPressed ? config.pressedScale : 1.0)
+    }
+}
+
 
 extension ButtonStyle where Self == CustomButtonStyle {
     static func customStyle(
@@ -123,7 +163,12 @@ struct CustomButtonStyle: ButtonStyle {
         }
     
     func makeBody(configuration: ButtonStyleConfiguration) -> some View {
-        return CustomButtonStyle.addButtonDumping(configuration: configuration, config: config, width: width)
+        switch rank {
+        case .primary:
+            CustomButtonStyle.addButtonDumping(configuration: configuration, config: config, width: width)
+        case .sendLoading:
+            CustomButtonStyle.sendButtonDumping(configuration: configuration, config: config, width: width)
+        }
     }
 }
 
