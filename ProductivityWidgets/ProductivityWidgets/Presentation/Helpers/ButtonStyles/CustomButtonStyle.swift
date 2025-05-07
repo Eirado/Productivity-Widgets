@@ -7,110 +7,142 @@
 
 import SwiftUI
 
-struct ModifierContainer: View {
-    var body: some View {
-        Color.clear
-    }
-}
-
-
-protocol ButtonConfiguration {
-    var iconName: String { get }
-    var height: CGFloat { get }
-    var width: CGFloat { get }
-    var foregroundColor: Color { get }
-    var backgroundColor: Color { get }
-    var iconSize: CGFloat { get }
-    
-    // Animation properties
-    func getAnimationEffect(isPressed: Bool) -> AnyView
-}
-
-struct AddButtonConfiguration: ButtonConfiguration {
-    let height: CGFloat
-    let width: CGFloat
-    let foregroundColor: Color
-    let backgroundColor: Color
-    
-    // Default values
-    init(
-        height: CGFloat = 56,
-        width: CGFloat = .zero,
-        foregroundColor: Color = .black,
-        backgroundColor: Color = .white
-    ) {
-        self.height = height
-        self.width = width
-        self.foregroundColor = foregroundColor
-        self.backgroundColor = backgroundColor
-    }
-    
-    var iconName: String {
-        return "plus"
-    }
-    
-    var iconSize: CGFloat {
-        return height * 0.43
-    }
-    
-    func getAnimationEffect(isPressed: Bool) -> AnyView {
-        return AnyView(
-            ModifierContainer()
-                .scaleEffect(isPressed ? 0.8 : 1.0)
-                .animation(.spring(response: 0.4, dampingFraction: 0.7), value: isPressed)
-        )
-    }
-}
-
-
-
-
-
 enum ButtonRank {
     case primary
 }
+
+struct ButtonStyleConfig {
+    var backgroundColor: Color
+    var foregroundColor: Color
+    var cornerRadius: CGFloat
+    var pressedScale: CGFloat
+    var pressedOpacity: Double
+    var font: Font?
+    var borderColor: Color?
+    var borderWidth: CGFloat
+    var isCircular: Bool
+    
+    static func config(for rank: ButtonRank) -> ButtonStyleConfig {
+        switch rank {
+        case .primary:
+            return ButtonStyleConfig(
+                backgroundColor: .white,
+                foregroundColor: .black,
+                cornerRadius: 0,
+                pressedScale: 0.8,
+                pressedOpacity: 1,
+                font: .headline,
+                borderColor: nil,
+                borderWidth: 0,
+                isCircular: true
+            )
+        }
+    }
+}
+
+
+private extension CustomButtonStyle {
+    @ViewBuilder
+    static func StandardButtonView(
+        configuration: ButtonStyleConfiguration,
+        config: ButtonStyleConfig,
+        width: CGFloat?,
+        height: CGFloat
+    ) -> some View {
+        configuration.label
+            .font(config.font)
+            .foregroundColor(config.foregroundColor)
+            .frame(width: width, height: height)
+            .background(
+                Group {
+                    if let borderColor = config.borderColor, config.borderWidth > 0 {
+                        RoundedRectangle(cornerRadius: config.cornerRadius)
+                            .stroke(borderColor, lineWidth: config.borderWidth)
+                            .background(
+                                RoundedRectangle(cornerRadius: config.cornerRadius)
+                                    .fill(config.backgroundColor)
+                            )
+                    } else {
+                        RoundedRectangle(cornerRadius: config.cornerRadius)
+                            .fill(config.backgroundColor)
+                    }
+                }
+            )
+            .scaleEffect(configuration.isPressed ? config.pressedScale : 1.0)
+            .opacity(configuration.isPressed ? config.pressedOpacity : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
+    }
+}
+
+private extension CustomButtonStyle {
+    @ViewBuilder
+    static func addButtonDumping(
+        configuration: ButtonStyleConfiguration,
+        config: ButtonStyleConfig,
+        width: CGFloat
+    ) -> some View {
+        configuration.label
+        ZStack {
+            Circle()
+                .fill(config.backgroundColor)
+                .frame(width: width, height: width)
+            Image(systemName: "plus")
+                .font(.system(size: width * 0.43, weight: .bold))
+                .foregroundColor(config.foregroundColor)
+        }
+        .scaleEffect(configuration.isPressed ? config.pressedScale : 1.0)
+        .animation(.spring(response: 0.4, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
 
 extension ButtonStyle where Self == CustomButtonStyle {
     static func customStyle(
         rank: ButtonRank = .primary,
         width: CGFloat = .zero,
         height: CGFloat = .zero,
-        screenSafaAreas: EdgeInsets = .init(.zero)
-    ) -> CustomButtonStyle {
-        
-        
-        
-        CustomButtonStyle(rank: rank, width: width, height: height, screenSafaAreas: screenSafaAreas)
+        screenSafeAreas: EdgeInsets = .init(.zero)
+    ) -> Self {
+        CustomButtonStyle(rank: rank, width: width, height: height, screenSafeAreas: screenSafeAreas)
     }
 }
 
 struct CustomButtonStyle: ButtonStyle {
     let rank: ButtonRank
-    let height: CGFloat
-    let width: CGFloat
-    let screenSafaAreas: EdgeInsets
-    
-    init(rank: ButtonRank, width: CGFloat, height: CGFloat, screenSafaAreas: EdgeInsets) {
-        self.rank = rank
-        self.width = width
-        self.height = height
-        self.screenSafaAreas = screenSafaAreas
-    }
+        let height: CGFloat
+        let width: CGFloat
+        let screenSafeAreas: EdgeInsets
+        private let config: ButtonStyleConfig
+        
+        init(rank: ButtonRank, width: CGFloat, height: CGFloat, screenSafeAreas: EdgeInsets) {
+            self.rank = rank
+            self.width = width
+            self.height = height
+            self.screenSafeAreas = screenSafeAreas
+            self.config = ButtonStyleConfig.config(for: rank)
+        }
     
     func makeBody(configuration: ButtonStyleConfiguration) -> some View {
-        configuration.label
-        ZStack {
-            Circle()
-                .fill(.white)
-                .frame(height: height)
-            Image(systemName: "plus")
-                .font(.system(size: height * 0.43, weight: .bold))
-                .foregroundColor(.black)
-        }
-        .scaleEffect(configuration.isPressed ? 0.8 : 1.0)
-        .animation(.spring(response: 0.4, dampingFraction: 0.7), value: configuration.isPressed)
+        return CustomButtonStyle.addButtonDumping(configuration: configuration, config: config, width: width)
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -123,12 +155,12 @@ struct buttonPreview: View {
                         .ignoresSafeArea()
                     VStack(alignment: .center, spacing: 10) {
                         Button("") {
-                            
+
                         }
-                        .buttonStyle(.customStyle(width: geometry.size.width ,height: geometry.size.width * 0.2))
-                        
+                        .buttonStyle(.customStyle(rank: .primary, width: geometry.size.width * 0.4))
+
                     }.frame(width: geometry.size.width, height: geometry.size.height )
-                    
+
                 }
             }
         }
