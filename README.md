@@ -2,15 +2,18 @@
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
   <img
-    src="https://github.com/user-attachments/assets/003616a0-d2ff-418a-a942-0dad891f503f"
+    src="https://raw.githubusercontent.com/your-user/your-repo/main/assets/screenshot.png"
     alt=""
     width="250"
     style="border: none;"
   />
+
   <video
-    src="https://github.com/user-attachments/assets/33d33c0a-aaaf-4cba-9650-5504d1e699e8"
+    src="https://raw.githubusercontent.com/your-user/your-repo/main/assets/demo.mp4"
     width="250"
     controls
     style="border: none;"
-  ></video>
+  >
+    Your browser doesn’t support the video tag.
+  </video>
 </div>
