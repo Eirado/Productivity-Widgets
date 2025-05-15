@@ -9,8 +9,12 @@ import SwiftUI
 import WidgetKit
 // SHOULD GET BIGGER WHEN HAS A BIT TEXT
 // SHOULD BE EDITED WITH A SHEET
-struct TodoRowView: View {
-
+struct TodoRowView: View, Equatable{
+    
+    static func == (lhs: TodoRowView, rhs: TodoRowView) -> Bool {
+        lhs._todo.id == rhs._todo.id
+    }
+    
     @Bindable var todo: Todo
     @Environment(\.modelContext) private var context
     
@@ -27,25 +31,17 @@ struct TodoRowView: View {
                     .padding(3)
                     .contentShape(.rect)
                     .foregroundStyle(todo.isCompleted ? .gray : .primary)
-                
             }
             TextField("", text: $todo.task, axis: .vertical)
                 .strikethrough(todo.isCompleted)
                 .foregroundStyle(todo.isCompleted ? .gray : .primary)
                 .font(.interItalic(fontweight: .regular, fontStyle: .body))
-                .onSubmit {
-                    if todo.task.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        withAnimation(.smooth) {
-                        context.delete(todo)
-                        }
-                        WidgetCenter.shared.reloadAllTimelines()
-                    }
-                }
+            
         }
         .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 10))
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button("", systemImage: "trash") {
-                    context.delete(todo)
+                context.delete(todo)
                 WidgetCenter.shared.reloadAllTimelines()
             }
             .tint(.red)

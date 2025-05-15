@@ -42,7 +42,7 @@ struct ToggleTodoTask: AppIntent {
         if let todo = try modelContext.fetch(descriptor).first {
             todo.isCompleted.toggle()
             try modelContext.save()
-            WidgetCenter.shared.reloadTimelines(ofKind: "TODO")
+            WidgetCenter.shared.reloadAllTimelines()
         }
         
         return .result()

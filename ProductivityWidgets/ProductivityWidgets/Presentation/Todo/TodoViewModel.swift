@@ -45,9 +45,8 @@ class TodoViewModel {
     
     public func smoothlyScrollToNewItem(proxy: ScrollViewProxy, todoID: PersistentIdentifier, isLast: Bool) {
         if isLast {
-            
+            //
         }
-        
         withAnimation(.smooth(duration: 0.3).delay(0.1)) {
             proxy.scrollTo(todoID, anchor: .center)
         }

@@ -29,10 +29,10 @@ struct AddTodoSheetView: View {
                     .frame(minHeight: sheetHeight * 0.5)
                     .background(Color(.systemGray6))
                     .multilineTextAlignment(.leading)
+                    .focusOnAppear()
                     .onSubmit {
                         dismiss()
                     }
-                    .focusOnAppear()
             }
             Spacer()
             HStack {

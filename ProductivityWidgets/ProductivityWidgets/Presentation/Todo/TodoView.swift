@@ -6,6 +6,10 @@
 //
 
 
+extension Color {
+    static var selectedColor = Color(.init())
+}
+
 import SwiftUI
 import SwiftData
 
@@ -14,6 +18,7 @@ struct TodoView: View, SizedViewProtocol {
     var screenSafeAreas: EdgeInsets
     @State private var viewModel: TodoViewModel
     @State var isAddingTodo: Bool = false
+    @State private var selectedColor: Color = Color(.init())
     
     // Refactor to only the viewModel have acess
     @Query(
@@ -27,6 +32,7 @@ struct TodoView: View, SizedViewProtocol {
         self.screenSize = size
         self.screenSafeAreas = safeArea
         self.viewModel = viewModel
+        
     }
     
     var body: some View {

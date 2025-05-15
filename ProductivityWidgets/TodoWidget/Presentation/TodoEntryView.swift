@@ -26,5 +26,7 @@ struct TodoEntryView : View {
         }
         .containerBackground(.black, for: .widget)
         .padding(.horizontal, -10)
+        .labelsHidden()
     }
 }
+

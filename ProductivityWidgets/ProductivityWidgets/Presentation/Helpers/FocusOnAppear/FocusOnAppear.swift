@@ -21,7 +21,7 @@ extension View {
         #else
             focused(condition)
         #endif
-    }
+    } 
     
     /// Modifies this view to set focus when the view appears along with the system keyboard in a single animation, and bind its focus state to the given state value.
     /// - Parameters:

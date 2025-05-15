@@ -21,7 +21,7 @@ public protocol TodoRepositoryProtocol {
     func deleteAllTodos() async throws
 }
 
-@MainActor
+
 final class TodoRepository: TodoRepositoryProtocol {
     weak private var context: ModelContext?
 
