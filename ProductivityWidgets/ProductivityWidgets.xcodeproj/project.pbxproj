@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		385190462E09CF6F00145AD0 /* AppleIntelligenceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385190452E09CF5E00145AD0 /* AppleIntelligenceTest.swift */; };
 		38AA07102DBA8A2C00135AC4 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38AA070F2DBA8A2C00135AC4 /* WidgetKit.framework */; };
 		38AA07122DBA8A2C00135AC4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38AA07112DBA8A2C00135AC4 /* SwiftUI.framework */; };
 		38AA07232DBA8A2E00135AC4 /* TodoExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 38AA070D2DBA8A2C00135AC4 /* TodoExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -38,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		382C81BB2DC559AC000FDBA6 /* TodoExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodoExtension.entitlements; sourceTree = "<group>"; };
+		385190452E09CF5E00145AD0 /* AppleIntelligenceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleIntelligenceTest.swift; sourceTree = "<group>"; };
 		38AA06B82DBA81FF00135AC4 /* ProductivityWidgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProductivityWidgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38AA070D2DBA8A2C00135AC4 /* TodoExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TodoExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		38AA070F2DBA8A2C00135AC4 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -174,6 +176,7 @@
 		38AA06AF2DBA81FF00135AC4 = {
 			isa = PBXGroup;
 			children = (
+				385190452E09CF5E00145AD0 /* AppleIntelligenceTest.swift */,
 				382C81BB2DC559AC000FDBA6 /* TodoExtension.entitlements */,
 				38AA06BA2DBA81FF00135AC4 /* ProductivityWidgets */,
 				38AA07132DBA8A2C00135AC4 /* TodoWidget */,
@@ -311,6 +314,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				385190462E09CF6F00145AD0 /* AppleIntelligenceTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +475,8 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=iphoneos*]" = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -508,6 +514,8 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=iphoneos*]" = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

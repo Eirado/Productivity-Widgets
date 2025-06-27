@@ -7,7 +7,7 @@
 
 import SwiftData
 import Foundation
-import SwiftUICore
+import SwiftUI
 
 @Model
 public class Todo {
