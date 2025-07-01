@@ -12,6 +12,7 @@ extension Color {
 
 import SwiftUI
 import SwiftData
+import FoundationModels
 
 struct TodoView: View, SizedViewProtocol {
     var screenSize: CGSize
@@ -32,7 +33,6 @@ struct TodoView: View, SizedViewProtocol {
         self.screenSize = size
         self.screenSafeAreas = safeArea
         self.viewModel = viewModel
-        
     }
     
     var body: some View {
@@ -64,7 +64,11 @@ struct TodoView: View, SizedViewProtocol {
                     AddTodoSheetView(height: screenSize.height * 0.28, screenWidth: screenSize.width, screenHeight: screenSize.height, addTask: { text in await viewModel.createTodo(task: text) })
                 }
             }
+            .glassEffectTransition(.identity, isEnabled: false)
             .navigationTitle("Todo List")
+            .task { // move this
+                viewModel.prewarm()
+            }
         }
     }
 }

@@ -9,6 +9,11 @@ import Foundation
 import SwiftUI
 import SwiftData
 import WidgetKit
+import FoundationModels
+
+enum GenerationError: Error {
+    case noPrompt
+}
 
 @Observable
 class TodoViewModel {
@@ -17,10 +22,15 @@ class TodoViewModel {
     
     @ObservationIgnored
     private let todoRepository: TodoRepositoryProtocol
+    @ObservationIgnored
+    private let languageModel: AISessionManager
+    public let prompt: Prompt? = nil
     
+    public var generatedTask: GenerableTask.PartiallyGenerated?
     
     init(todoRepository: TodoRepositoryProtocol) {
         self.todoRepository = todoRepository
+        languageModel = AISessionManager(instructions: TaskInstruction.instruction)
     }
     
     public func createTodo(task: String) async {
@@ -50,6 +60,25 @@ class TodoViewModel {
         withAnimation(.smooth(duration: 0.3).delay(0.1)) {
             proxy.scrollTo(todoID, anchor: .center)
         }
+    }
+    
+    func generateTasks() async throws {
+        guard let prompt = self.prompt else {
+            throw GenerationError.noPrompt
+        }
+        let stream = languageModel.session.streamResponse(
+            to: prompt,
+            generating: GenerableTask.self,
+            options: GenerationOptions(sampling: .greedy)
+        )
+        
+        for try await partialResponse in stream {
+            generatedTask = partialResponse
+        }
+    }
+    
+    public func prewarm() {
+        languageModel.prewarm()
     }
 }
 
