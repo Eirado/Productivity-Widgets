@@ -57,6 +57,9 @@ struct TodoView: View, SizedViewProtocol {
                     }
                 }
                 TodoViewButton(isAddingTodo: $isAddingTodo, screenSize: screenSize)
+                {
+                    
+                }
             }
             .sensoryFeedback(.success, trigger: todos)
             .sheet(isPresented: $isAddingTodo) {
@@ -68,6 +71,9 @@ struct TodoView: View, SizedViewProtocol {
             .navigationTitle("Todo List")
             .task { // move this
                 viewModel.prewarm()
+                Task {
+                    try await viewModel.generateTasks(prompt: Prompt("Preciso arrumar a casa, tenho 1 banheiro e 2 quartos"))
+                }
             }
         }
     }
