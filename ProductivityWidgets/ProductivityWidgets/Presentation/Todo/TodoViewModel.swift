@@ -126,7 +126,7 @@ class TodoViewModel {
     
     private func updateStreamingTodoTask(todoID: PersistentIdentifier, newTask: String) async {
         do {
-            try await todoRepository.updateTask(todoID: todoID, newTask: newTask)
+            try await todoRepository.updateTask(todoID: todoID, newTask: newTask, isGenerating: true)
         } catch {
             print("Error updating streaming todo task: \(error)")
         }
@@ -140,7 +140,7 @@ class TodoViewModel {
         do {
             try await self.todoRepository.deleteAllTodos()
         } catch {
-            
+            print("couldn't delete")
         }
     }
 

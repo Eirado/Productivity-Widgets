@@ -19,7 +19,11 @@ public protocol TodoRepositoryProtocol {
     func fetchRecentCompletedTodos() async throws -> [Todo]
     func deleteTodo(todo: Todo) async throws -> String
     func deleteAllTodos() async throws
-    func updateTask(todoID: PersistentIdentifier, newTask: String) async throws
+    func updateTask(todoID: PersistentIdentifier, newTask: String, isGenerating: Bool ) async throws
+}
+
+extension TodoRepositoryProtocol {
+    func updateTask(todoID: PersistentIdentifier, newTask: String, isGenerating: Bool = false) async throws { }
 }
 
 
@@ -58,16 +62,28 @@ final class TodoRepository: TodoRepositoryProtocol {
         guard let context = context else {
             throw PersistenceError.contextError
         }
-        
         guard let todo = context.model(for: todoID) as? Todo else {
             throw PersistenceError.contextError
         }
-        
         todo.task = newTask
         todo.lastModified = .now
-        
         try context.save()
     }
+    
+    public func updateTask(todoID: PersistentIdentifier, newTask: String, isGenerating: Bool = false) async throws {
+        guard let context = context else {
+            throw PersistenceError.contextError
+        }
+        guard let todo = context.model(for: todoID) as? Todo else {
+            throw PersistenceError.contextError
+        }
+        todo.task = newTask
+        if !isGenerating {
+            todo.lastModified = .now
+        }
+        try context.save()
+    }
+
 
     public func deleteAllTodos() async throws {
         guard let context = context else {

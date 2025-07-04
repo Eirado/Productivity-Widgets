@@ -20,6 +20,9 @@ struct TodoViewButton: View {
                 Button {
                     isAddingTodo = true
                     trigger.toggle()
+                    Task {
+                        await callbackClosure()
+                    }
                 } label: {
                   
                 }

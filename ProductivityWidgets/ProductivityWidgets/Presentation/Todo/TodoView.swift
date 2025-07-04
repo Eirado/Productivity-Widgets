@@ -20,6 +20,7 @@ struct TodoView: View, SizedViewProtocol {
     @State private var viewModel: TodoViewModel
     @State var isAddingTodo: Bool = false
     @State private var selectedColor: Color = Color(.init())
+    @State private var isGenerating: Bool = true
     
     // Refactor to only the viewModel have acess
     @Query(
@@ -47,7 +48,7 @@ struct TodoView: View, SizedViewProtocol {
                                 .listRowSeparator(.hidden)
                         }
                     }
-                    .animation(.smooth, value: todos)
+                    .animation(isGenerating ? nil : .smooth, value: todos)
                     .listStyle(.plain)
                     .scrollIndicators(.hidden)
                     .onChange(of: viewModel.lastAddedTodoID) { _, newId in
@@ -58,7 +59,7 @@ struct TodoView: View, SizedViewProtocol {
                 }
                 TodoViewButton(isAddingTodo: $isAddingTodo, screenSize: screenSize)
                 {
-                    
+                    await viewModel.deleteAllTodo()
                 }
             }
             .sensoryFeedback(.success, trigger: todos)
@@ -72,10 +73,15 @@ struct TodoView: View, SizedViewProtocol {
             .task { // move this
                 viewModel.prewarm()
                 Task {
-                    try await viewModel.generateTasks(prompt: Prompt("Preciso arrumar a casa, tenho 1 banheiro e 2 quartos"))
+                    try await viewModel.generateTasks(prompt: Prompt("I need to Learning about multithreading in Java arning and do a connection with a Kafka server"))
                 }
+                isGenerating = false
             }
         }
+    }
+    
+    private func cleanForGeneratingState() {
+        
     }
 }
 
