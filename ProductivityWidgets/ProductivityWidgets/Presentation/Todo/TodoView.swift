@@ -58,14 +58,15 @@ struct TodoView: View, SizedViewProtocol {
                     }
                 }
                 TodoViewButton(isAddingTodo: $isAddingTodo, screenSize: screenSize)
-                {
-                    await viewModel.deleteAllTodo()
-                }
             }
             .sensoryFeedback(.success, trigger: todos)
             .sheet(isPresented: $isAddingTodo) {
                 withAnimation(.snappy) {
-                    AddTodoSheetView(height: screenSize.height * 0.28, screenWidth: screenSize.width, screenHeight: screenSize.height, addTask: { text in await viewModel.createTodo(task: text) })
+                    AddTodoSheetView(
+                        height: screenSize.height * 0.28,
+                        screenWidth: screenSize.width, screenHeight: screenSize.height,
+                        createTodo: { userInputText in await viewModel.createTodo(task: userInputText) },
+                        startTaskGeneration: { prompt in await viewModel.startTaskStreamGeneration(prompt: Prompt(prompt))})
                 }
             }
             .glassEffectTransition(.identity, isEnabled: false)
@@ -73,7 +74,7 @@ struct TodoView: View, SizedViewProtocol {
             .task { // move this
                 viewModel.prewarm()
                 Task {
-                    try await viewModel.generateTasks(prompt: Prompt("I need to Learning about multithreading in Java arning and do a connection with a Kafka server"))
+                    try await viewModel.startTaskStreamGeneration(prompt: Prompt("I need to Learning about multithreading in Java arning and do a connection with a Kafka server"))
                 }
                 isGenerating = false
             }

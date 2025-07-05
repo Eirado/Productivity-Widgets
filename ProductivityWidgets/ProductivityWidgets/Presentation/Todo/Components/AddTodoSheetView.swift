@@ -19,16 +19,18 @@ struct AddTodoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var text: String = ""
     private let createTodo: (String) async -> Void
+    private var startTaskGeneration: (_ prompt: String) async -> Void
     private let screenWidth: CGFloat
     private let screenHeight: CGFloat
     private let initialHeight: CGFloat
     private let lineHeight: CGFloat = 24
     
-    init(height: CGFloat, screenWidth: CGFloat, screenHeight: CGFloat, addTask: @escaping (String) async -> Void) {
+    init(height: CGFloat, screenWidth: CGFloat, screenHeight: CGFloat, createTodo: @escaping (String) async -> Void, startTaskGeneration: @escaping (String) async -> Void) {
         self.initialHeight = height
-        self.createTodo = addTask
+        self.createTodo = createTodo
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
+        self.startTaskGeneration = startTaskGeneration
     }
     
     private var currentSheetHeight: CGFloat {

@@ -11,7 +11,6 @@ struct TodoViewButton: View {
     @Binding var isAddingTodo: Bool
     var screenSize: CGSize
     @State private var trigger = false
-    var callbackClosure: () async ->  Void
     var body: some View {
         VStack {
             Spacer()
@@ -20,9 +19,6 @@ struct TodoViewButton: View {
                 Button {
                     isAddingTodo = true
                     trigger.toggle()
-                    Task {
-                        await callbackClosure()
-                    }
                 } label: {
                   
                 }

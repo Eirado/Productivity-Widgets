@@ -26,7 +26,7 @@ class TodoViewModel {
     private let languageModel: AISessionManager
     public var prompt: Prompt? = nil
     
-    public var generatedTask: GenerableTask.PartiallyGenerated?
+    public var generatedTasks: GenerableTask.PartiallyGenerated?
     
     // Track streaming state
     @ObservationIgnored
@@ -52,7 +52,7 @@ class TodoViewModel {
         }
     }
     
-    public func deleteTodo(todo: Todo, index: Int) async {
+    public func deleteTodo(todo: Todo, index: Int) async { // do this by iD
         do {
             _ = try await todoRepository.deleteTodo(todo: todo)
             WidgetCenter.shared.reloadAllTimelines()
@@ -70,35 +70,62 @@ class TodoViewModel {
         }
     }
     
-    func generateTasks(prompt: Prompt) async throws {
+    public func startTaskGeneration(prompt: String) async {
+        do {
+          try await startTaskStreamGeneration(prompt: Prompt(prompt))
+        } catch {
+            
+        }
+    }
+
+    public func prewarm() {
+        languageModel.prewarm()
+    }
+    
+    public func updateTodoTask(todoID: PersistentIdentifier, newTask: String) async {
+        do {
+            try await todoRepository.updateTask(todoID: todoID, newTask: newTask, isGenerating: true)
+        } catch {
+            print("Error updating streaming todo task: \(error)")
+        }
+    }
+    
+    public func deleteAllTodos() async {
+        do {
+            try await self.todoRepository.deleteAllTodos()
+        } catch {
+            print("couldn't delete")
+        }
+    }
+}
+
+private extension TodoViewModel {
+    
+    func updateLastAddedTodoID(with id: PersistentIdentifier) {
+        self.lastAddedTodoID = id
+    }
+
+    func startTaskStreamGeneration(prompt: Prompt) async throws {
         self.prompt = prompt
-        
         guard let prompt = self.prompt else {
             throw GenerationError.noPrompt
         }
-        
         clearStreamingState()
-        
         let stream = languageModel.session.streamResponse(
             to: prompt,
             generating: GenerableTask.self,
             options: GenerationOptions(sampling: .greedy)
         )
-        
         for try await partialResponse in stream {
-            generatedTask = partialResponse
+            generatedTasks = partialResponse
             await processStreamingUpdate(partialResponse)
-            print(generatedTask)
         }
-
         WidgetCenter.shared.reloadAllTimelines()
     }
     
-    private func processStreamingUpdate(_ partialResponse: GenerableTask.PartiallyGenerated) async {
+    func processStreamingUpdate(_ partialResponse: GenerableTask.PartiallyGenerated) async {
         guard let todoDescriptions = partialResponse.todoDescription else { return }
-        
         let currentCount = todoDescriptions.count
-        
         // Handle new todos (when array grows)
         if currentCount > lastProcessedCount {
             // Create new todos for new indices
@@ -112,47 +139,17 @@ class TodoViewModel {
                 }
             }
         }
-        
-        // Update existing todos with new content (only task property changes)
         for (index, todoDescription) in todoDescriptions.enumerated() {
-            if index < streamingTodoIDs.count {
+            if index < lastProcessedCount && index < streamingTodoIDs.count {
                 let todoID = streamingTodoIDs[index]
-                await updateStreamingTodoTask(todoID: todoID, newTask: todoDescription)
+                await updateTodoTask(todoID: todoID, newTask: todoDescription)
             }
         }
-        
         lastProcessedCount = currentCount
     }
-    
-    private func updateStreamingTodoTask(todoID: PersistentIdentifier, newTask: String) async {
-        do {
-            try await todoRepository.updateTask(todoID: todoID, newTask: newTask, isGenerating: true)
-        } catch {
-            print("Error updating streaming todo task: \(error)")
-        }
-    }
-    
-    public func prewarm() {
-        languageModel.prewarm()
-    }
-    
-    public func deleteAllTodo() async {
-        do {
-            try await self.todoRepository.deleteAllTodos()
-        } catch {
-            print("couldn't delete")
-        }
-    }
-
     public func clearStreamingState() {
         streamingTodoIDs.removeAll()
         lastProcessedCount = 0
-        generatedTask = nil
-    }
-}
-
-private extension TodoViewModel {
-    func updateLastAddedTodoID(with id: PersistentIdentifier) {
-        self.lastAddedTodoID = id
+        generatedTasks = nil
     }
 }
