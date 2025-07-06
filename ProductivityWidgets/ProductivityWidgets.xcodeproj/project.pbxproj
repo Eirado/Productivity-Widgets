@@ -52,6 +52,7 @@
 		382C81B92DC5541B000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "TodoExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				App/Assets.xcassets,
 				DataLayer/ModelContainerProvider.swift,
 				"Fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf",
 				"Fonts/Inter/Inter-VariableFont_opsz,wght.ttf",
@@ -120,7 +121,6 @@
 		382C83562DCA9BA8000FDBA6 /* Exceptions for "ProductivityWidgets" folder in "ProductivityWidgets" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				App/Assets.xcassets,
 				Info.plist,
 				"Preview Content/Preview Assets.xcassets",
 			);

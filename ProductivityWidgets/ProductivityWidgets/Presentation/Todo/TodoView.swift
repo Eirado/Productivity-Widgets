@@ -65,19 +65,19 @@ struct TodoView: View, SizedViewProtocol {
                     AddTodoSheetView(
                         height: screenSize.height * 0.28,
                         screenWidth: screenSize.width, screenHeight: screenSize.height,
-                        createTodo: { userInputText in await viewModel.createTodo(task: userInputText) },
-                        startTaskGeneration: { prompt in await viewModel.startTaskStreamGeneration(prompt: Prompt(prompt))})
+                        createTodo: { userInputText in await
+                            viewModel.createTodo(task: userInputText)
+                        },
+                        startTaskGeneration: { prompt in await
+                            viewModel.startTaskGeneration(prompt: prompt)
+                        },
+                        prewarm: { viewModel.prewarm() }
+                    )
                 }
             }
+            .glassEffect(isEnabled: false)
             .glassEffectTransition(.identity, isEnabled: false)
             .navigationTitle("Todo List")
-            .task { // move this
-                viewModel.prewarm()
-                Task {
-                    try await viewModel.startTaskStreamGeneration(prompt: Prompt("I need to Learning about multithreading in Java arning and do a connection with a Kafka server"))
-                }
-                isGenerating = false
-            }
         }
     }
     

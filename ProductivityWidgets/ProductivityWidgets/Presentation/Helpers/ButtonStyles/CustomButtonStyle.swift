@@ -10,6 +10,7 @@ import SwiftUI
 enum ButtonRank {
     case primary
     case sendLoading
+    case appleInteliggence
 }
 
 struct ButtonStyleConfig {
@@ -51,6 +52,18 @@ struct ButtonStyleConfig {
             )
             
         
+        case .appleInteliggence:
+            return ButtonStyleConfig(
+                backgroundColor: .white,
+                foregroundColor: .black,
+                cornerRadius: 0,
+                pressedScale: 0.8,
+                pressedOpacity: 1,
+                font: .headline,
+                borderColor: nil,
+                borderWidth: 0,
+                isCircular: true
+            )
         }
     }
 }
@@ -135,6 +148,26 @@ private extension CustomButtonStyle {
     }
 }
 
+private extension CustomButtonStyle {
+    @ViewBuilder
+    static func appleIntelligenceButton(
+        configuration: ButtonStyleConfiguration,
+        config: ButtonStyleConfig,
+        width: CGFloat
+    ) -> some View {
+        configuration.label
+        ZStack {
+            Circle()
+                .fill(config.backgroundColor)
+                .frame(width: width, height: width)
+
+            Image("AppleIntelligenceIcon")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: width * 0.7, height: width * 0.7)
+        }
+    }
+}
 
 extension ButtonStyle where Self == CustomButtonStyle {
     static func customStyle(
@@ -168,25 +201,11 @@ struct CustomButtonStyle: ButtonStyle {
             CustomButtonStyle.addButtonDumping(configuration: configuration, config: config, width: width)
         case .sendLoading:
             CustomButtonStyle.sendButtonDumping(configuration: configuration, config: config, width: width)
+        case .appleInteliggence:
+            CustomButtonStyle.appleIntelligenceButton(configuration: configuration, config: config, width: width)
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -202,7 +221,7 @@ struct buttonPreview: View {
                         Button("") {
 
                         }
-                        .buttonStyle(.customStyle(rank: .primary, width: geometry.size.width * 0.4))
+                        .buttonStyle(.customStyle(rank: .appleInteliggence, width: geometry.size.width * 0.4))
 
                     }.frame(width: geometry.size.width, height: geometry.size.height )
 
