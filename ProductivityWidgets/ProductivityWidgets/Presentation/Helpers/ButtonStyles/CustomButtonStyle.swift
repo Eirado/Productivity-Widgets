@@ -163,7 +163,7 @@ private extension CustomButtonStyle {
         gradientColors: [Color]
     ) -> some View {
         
-        AnimatedAppleIntelligenceButton(
+        AnimatedAppleIntelligenceButton( // TODO: horrible idea needs Refactoring
             configuration: configuration,
             config: config,
             width: width,
@@ -191,7 +191,7 @@ private struct AnimatedAppleIntelligenceButton: View {
                     angle: .degrees(360)))
                 .frame(width: width, height: width)
                 .rotationEffect(.degrees(rotation))
-                .blur(radius: config.isToggle ? 15 : 0)
+                .blur(radius: config.isToggle ? 10 : 0)
             
             Circle()
                 .fill(config.backgroundColor)
@@ -204,7 +204,7 @@ private struct AnimatedAppleIntelligenceButton: View {
         }
         .scaleEffect(configuration.isPressed ? config.pressedScale : 1.0)
         .onAppear {
-            withAnimation(Animation.linear(duration: 7).repeatForever(autoreverses: false)) {
+            withAnimation(Animation.linear(duration: 2).repeatForever(autoreverses: false)) {
                 rotation = 360
             }
         }
@@ -244,9 +244,9 @@ struct CustomButtonStyle: ButtonStyle {
         let config = ButtonStyleConfig.config(for: rank, isToggle: dynamicBool)
         
         let gradientColors: [Color] = [
-            .yellow.opacity(0.1),.mint.opacity(0.2),.yellow.opacity(0.1),
+            .yellow.opacity(0.5),.mint.opacity(0.9),.yellow.opacity(0.5),
             .purple,.orange,.pink,.purple,.cyan,.purple,.pink,.orange,
-            .yellow.opacity(0.1),.mint.opacity(0.2),.yellow.opacity(0.1)
+            .yellow.opacity(0.5),.mint.opacity(0.9),.yellow.opacity(0.5)
         ]
         
         
@@ -280,7 +280,7 @@ struct buttonPreview: View {
         ZStack {
             GeometryReader { geometry in
                 ZStack {
-                    Color.gray
+                    Color.black
                         .ignoresSafeArea()
                     VStack(alignment: .center, spacing: 10) {
                         Button("") {

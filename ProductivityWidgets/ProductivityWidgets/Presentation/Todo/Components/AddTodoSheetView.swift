@@ -38,12 +38,11 @@ struct AddTodoSheetView: View {
         }
         return initialHeight
     }
-
     
     var body: some View {
         VStack {
             VStack{
-                TextField("Enter task...", text: $text, axis: .vertical)
+                TextField(isPrompting ? "Enter your prompt..." : "Enter task...", text: $text, axis: .vertical)
                     .padding(.horizontal)
                     .padding(.vertical)
                     .frame(minHeight: currentSheetHeight * 0.4)
@@ -53,7 +52,6 @@ struct AddTodoSheetView: View {
                     .onSubmit {
                         dismiss()
                     }
-                    .glassEffect(isEnabled: true)
             }
             Spacer()
             HStack {
@@ -64,8 +62,7 @@ struct AddTodoSheetView: View {
                     .buttonStyle(.customStyle(rank: .appleInteliggence, width: screenWidth * 0.12, dynamicBool: isPrompting))
                 Button {
                     Task {
-                        await createTodo(text)
-                        await startTaskGeneration(text)
+                      await isPrompting ? startTaskGeneration(text) : createTodo(text)
                     }
                     dismiss()
                 } label: {  }
