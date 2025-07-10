@@ -17,6 +17,7 @@ struct AddTodoSheetView: View {
     private let screenHeight: CGFloat
     private let initialHeight: CGFloat
     private let lineHeight: CGFloat = 24
+    @State private var isPrompting: Bool = false
 
     
     init(height: CGFloat, screenWidth: CGFloat, screenHeight: CGFloat, createTodo: @escaping (String) async -> Void, startTaskGeneration: @escaping (String) async -> Void, prewarm: @escaping () -> Void) {
@@ -58,12 +59,9 @@ struct AddTodoSheetView: View {
             HStack {
                 Spacer()
                 Button {
-                    Task {
-                        
-                    }
-                    dismiss()
+                    isPrompting.toggle()
                 } label: {  }
-                    .buttonStyle(.customStyle(rank: .appleInteliggence, width: screenWidth * 0.12))
+                    .buttonStyle(.customStyle(rank: .appleInteliggence, width: screenWidth * 0.12, dynamicBool: isPrompting))
                 Button {
                     Task {
                         await createTodo(text)

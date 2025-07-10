@@ -147,7 +147,8 @@ private extension TodoViewModel {
         }
         lastProcessedCount = currentCount
     }
-    public func clearStreamingState() {
+    
+    func clearStreamingState() {
         streamingTodoIDs.removeAll()
         lastProcessedCount = 0
         generatedTasks = nil
