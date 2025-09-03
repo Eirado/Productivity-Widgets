@@ -1,10 +1,3 @@
-//
-//  TodoViewModel.swift
-//  ProductivityWidgets
-//
-//  Created by Gabriel Amaral on 25/04/25.
-//
-
 import Foundation
 import SwiftUI
 import SwiftData
@@ -24,18 +17,20 @@ class TodoViewModel {
     private let todoRepository: TodoRepositoryProtocol
     @ObservationIgnored
     private let languageModel: AISessionManager
-    public var prompt: Prompt? = nil
-    
-    public var generatedTasks: GenerableTask.PartiallyGenerated?
-    
-    // Track streaming state
     @ObservationIgnored
-    private var streamingTodoIDs: [PersistentIdentifier] = []
-    @ObservationIgnored
-    private var lastProcessedCount: Int = 0
+    private let modelContext: ModelContext
     
-    init(todoRepository: TodoRepositoryProtocol) {
+    // Streaming state - keep in memory only
+    public var streamingTodos: [String] = []
+    public var isGenerating = false
+    
+    // Debounce widget updates
+    @ObservationIgnored
+    private var widgetUpdateTask: Task<Void, Never>?
+    
+    init(todoRepository: TodoRepositoryProtocol, modelContext: ModelContext) {
         self.todoRepository = todoRepository
+        self.modelContext = modelContext
         languageModel = AISessionManager(instructions: TaskInstruction.instruction)
     }
     
@@ -46,35 +41,27 @@ class TodoViewModel {
         do {
             let newTodo = try await todoRepository.createTodo(task: task)
             updateLastAddedTodoID(with: newTodo.id)
-            WidgetCenter.shared.reloadAllTimelines()
+            scheduleWidgetUpdate()
         } catch {
             print("Error creating todo: \(error)")
         }
     }
     
-    public func deleteTodo(todo: Todo, index: Int) async { // do this by iD
+    public func deleteTodo(todo: Todo, index: Int) async {
         do {
             _ = try await todoRepository.deleteTodo(todo: todo)
-            WidgetCenter.shared.reloadAllTimelines()
+            scheduleWidgetUpdate()
         } catch {
             print("Error deleting todo: \(error)")
         }
     }
     
-    public func smoothlyScrollToNewItem(proxy: ScrollViewProxy, todoID: PersistentIdentifier, isLast: Bool) {
-        if isLast {
-            //
-        }
-        withAnimation(.smooth(duration: 0.3).delay(0.1)) {
-            proxy.scrollTo(todoID, anchor: .center)
-        }
-    }
-    
     public func startTaskGeneration(prompt: String) async {
         do {
-          try await startTaskStreamGeneration(prompt: Prompt(prompt))
+            try await startTaskStreamGeneration(prompt: Prompt(prompt))
         } catch {
-            
+            print("Generation error: \(error)")
+            isGenerating = false
         }
     }
 
@@ -82,75 +69,110 @@ class TodoViewModel {
         languageModel.prewarm()
     }
     
-    public func updateTodoTask(todoID: PersistentIdentifier, newTask: String) async {
-        do {
-            try await todoRepository.updateTask(todoID: todoID, newTask: newTask, isGenerating: true)
-        } catch {
-            print("Error updating streaming todo task: \(error)")
-        }
-    }
-    
     public func deleteAllTodos() async {
         do {
-            try await self.todoRepository.deleteAllTodos()
+            try await todoRepository.deleteAllTodos()
+            scheduleWidgetUpdate()
         } catch {
-            print("couldn't delete")
+            print("Couldn't delete all todos")
         }
     }
 }
 
+// MARK: - Private Methods
 private extension TodoViewModel {
     
     func updateLastAddedTodoID(with id: PersistentIdentifier) {
         self.lastAddedTodoID = id
     }
-
+    
     func startTaskStreamGeneration(prompt: Prompt) async throws {
-        self.prompt = prompt
-        guard let prompt = self.prompt else {
-            throw GenerationError.noPrompt
-        }
-        clearStreamingState()
+        isGenerating = true
+        streamingTodos.removeAll()
+        
         let stream = languageModel.session.streamResponse(
             to: prompt,
             generating: GenerableTask.self,
             options: GenerationOptions(sampling: .greedy)
         )
+        
+        // Stream updates to UI without persisting
         for try await partialResponse in stream {
-            generatedTasks = partialResponse
-            await processStreamingUpdate(partialResponse)
+            if let todoDescriptions = partialResponse.todoDescription {
+                streamingTodos = todoDescriptions
+            }
         }
-        WidgetCenter.shared.reloadAllTimelines()
+        
+        // Only persist when generation is complete
+        await persistStreamingTodos()
+        isGenerating = false
     }
     
-    func processStreamingUpdate(_ partialResponse: GenerableTask.PartiallyGenerated) async {
-        guard let todoDescriptions = partialResponse.todoDescription else { return }
-        let currentCount = todoDescriptions.count
-        // Handle new todos (when array grows)
-        if currentCount > lastProcessedCount {
-            // Create new todos for new indices
-            for index in lastProcessedCount..<currentCount {
-                let todoText = todoDescriptions[index]
-                do {
-                    let newTodo = try await todoRepository.createTodo(task: todoText)
-                    streamingTodoIDs.append(newTodo.id)
-                } catch {
-                    print("Error creating streaming todo: \(error)")
+    @MainActor
+    func persistStreamingTodos() async {
+        guard !streamingTodos.isEmpty else { return }
+        
+        // Batch create all todos in a single transaction
+        do {
+            // Use a single ModelContext transaction for all inserts
+            try modelContext.transaction {
+                for todoText in streamingTodos {
+                    let todo = Todo(
+                        taskID: UUID().uuidString,
+                        task: todoText,
+                        isCompleted: false,
+                        priority: .medium,
+                        lastModified: Date.now
+                    )
+                    modelContext.insert(todo)
+                    // Store the last created ID for scrolling
+                    if todoText == streamingTodos.last {
+                        lastAddedTodoID = todo.persistentModelID
+                    }
                 }
             }
+            
+            // Clear streaming state
+            streamingTodos.removeAll()
+            
+            // Single widget update after all todos are saved
+            WidgetCenter.shared.reloadAllTimelines()
+            
+        } catch {
+            print("Error persisting streaming todos: \(error)")
         }
-        for (index, todoDescription) in todoDescriptions.enumerated() {
-            if index < lastProcessedCount && index < streamingTodoIDs.count {
-                let todoID = streamingTodoIDs[index]
-                await updateTodoTask(todoID: todoID, newTask: todoDescription)
-            }
-        }
-        lastProcessedCount = currentCount
     }
     
-    func clearStreamingState() {
-        streamingTodoIDs.removeAll()
-        lastProcessedCount = 0
-        generatedTasks = nil
+    func scheduleWidgetUpdate() {
+        // Debounce widget updates to avoid excessive reloads
+        widgetUpdateTask?.cancel()
+        widgetUpdateTask = Task {
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+            if !Task.isCancelled {
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+        }
     }
+}
+
+// MARK: - SwiftUI Integration
+extension TodoViewModel {
+    var displayTodos: [DisplayTodo] {
+        // During generation, show streaming todos as temporary items
+        if isGenerating {
+            return streamingTodos.enumerated().map { index, text in
+                DisplayTodo(id: "streaming-\(index)", text: text, isCompleted: false, isStreaming: true)
+            }
+        }
+        // Otherwise show persisted todos (handled by @Query in the View)
+        return []
+    }
+}
+
+// MARK: - Supporting Types
+struct DisplayTodo: Identifiable {
+    let id: String
+    let text: String
+    let isCompleted: Bool
+    let isStreaming: Bool
 }

@@ -1,19 +1,11 @@
-//
-//  HomeView.swift
-//  ProductivityWidgets
-//
-//  Created by Gabriel Amaral on 24/04/25.
-//
-
-
-extension Color {
-    static var selectedColor = Color(.init())
-}
-
+import Foundation
 import SwiftUI
 import SwiftData
+import WidgetKit
 import FoundationModels
 
+
+// MARK: - Updated TodoView that preserves existing functionality
 struct TodoView: View, SizedViewProtocol {
     var screenSize: CGSize
     var screenSafeAreas: EdgeInsets
@@ -22,7 +14,6 @@ struct TodoView: View, SizedViewProtocol {
     @State private var selectedColor: Color = Color(.init())
     @State private var isGenerating: Bool = false
     
-    // TODO: Refactor to only the viewModel have acess
     @Query(
         sort: [
             SortDescriptor(\Todo.isCompleted, order: .forward),
@@ -42,20 +33,34 @@ struct TodoView: View, SizedViewProtocol {
                 Color(.black)
                 ScrollViewReader { proxy in
                     List {
+                        // Show persisted todos
                         ForEach(todos) { todo in
                             TodoRowView(todo: todo)
                                 .id(todo.id)
                                 .listRowSeparator(.hidden)
                         }
+                        
+                        // Show streaming todos during generation
+                        if viewModel.isGenerating {
+                                                   ForEach(Array(viewModel.streamingTodos.enumerated()), id: \.offset) { index, text in
+                                                       StreamingTodoRowView(
+                                                           text: text,
+                                                           index: index
+                                                       )
+                                                       .id("streaming-\(index)")
+                                                       .listRowSeparator(.hidden)
+                                                   }
+                        }
                     }
                     .animation(isGenerating ? nil : .smooth, value: todos)
                     .listStyle(.plain)
                     .scrollIndicators(.hidden)
-//                    .onChange(of: viewModel.lastAddedTodoID) { _, newId in
-//                        withAnimation(.smooth(duration: 0.3).delay(0.2)) {
-//                            proxy.scrollTo(newId, anchor: .bottom)
-//                        }
-//                    }
+                    .onChange(of: viewModel.lastAddedTodoID) { _, newId in
+                        guard let newId = newId else { return }
+                        withAnimation(.smooth(duration: 0.3).delay(0.2)) {
+                            proxy.scrollTo(newId, anchor: .bottom)
+                        }
+                    }
                 }
                 TodoViewButton(isAddingTodo: $isAddingTodo, screenSize: screenSize)
             }
@@ -64,7 +69,8 @@ struct TodoView: View, SizedViewProtocol {
                 withAnimation(.snappy) {
                     AddTodoSheetView(
                         height: screenSize.height * 0.28,
-                        screenWidth: screenSize.width, screenHeight: screenSize.height,
+                        screenWidth: screenSize.width,
+                        screenHeight: screenSize.height,
                         createTodo: { userInputText in await
                             viewModel.createTodo(task: userInputText)
                         },
@@ -84,14 +90,33 @@ struct TodoView: View, SizedViewProtocol {
     }
     
     private func cleanForGeneratingState() {
-
+        // Kept for compatibility
     }
 }
 
-#Preview {
-    TodoViewFactory.makeTodoView(
-        size: DevicePreview.iPhone16Pro.size,
-        safeArea: DevicePreview.iPhone16Pro.safeArea,
-        context: ModelContainerProvider.shared.modelContainer.mainContext
-    )
+struct StreamingTodoRowView: View {
+    let text: String
+    let index: Int
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "circle")
+                .foregroundColor(.gray.opacity(0.6))
+            
+            Text(text)
+                .opacity(0.8)
+                .overlay(
+                    // Typing indicator for the last item
+                    HStack {
+                        Spacer()
+                        if text.isEmpty {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                        }
+                    }
+                )
+        }
+        .listRowBackground(Color.gray.opacity(0.1))
+        .transition(.opacity.combined(with: .move(edge: .trailing)))
+    }
 }
