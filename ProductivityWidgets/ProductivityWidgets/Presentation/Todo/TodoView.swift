@@ -94,19 +94,49 @@ struct TodoView: View, SizedViewProtocol {
     }
 }
 
+import SwiftUI
+
 struct StreamingTodoRowView: View {
     let text: String
     let index: Int
+    
+    @State private var animate = false
+    
+    // The exact gradient colors from your example
+    let gradientColors: [Color] = [
+        .yellow.opacity(0.1), .mint.opacity(0.2), .yellow.opacity(0.1),
+        .purple, .orange, .pink, .purple, .cyan, .purple, .pink, .orange,
+        .mint.opacity(0.1), .mint.opacity(0.2), .yellow.opacity(0.1)
+    ]
     
     var body: some View {
         HStack {
             Image(systemName: "circle")
                 .foregroundColor(.gray.opacity(0.6))
             
+            // We start with your original Text view to preserve its layout perfectly.
             Text(text)
                 .opacity(0.8)
+                // We make the text itself clear...
+                .foregroundColor(.clear)
+                // ...and paint the animated gradient in the background.
+                .background(
+                    LinearGradient(
+                        gradient: Gradient(colors: gradientColors),
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .frame(width: UIScreen.main.bounds.width * 8.9, height: 800)
+                    .offset(x: animate ? UIScreen.main.bounds.width * -3.4 : UIScreen.main.bounds.width * 4)
+                    .rotationEffect(.degrees(20)).rotationEffect(.degrees(180))
+                )
+                // The mask clips the background gradient to the shape of the text.
+                .mask(
+                    Text(text)
+                        .opacity(0.8)
+                )
+                // Your original overlay for the "typing" indicator is untouched.
                 .overlay(
-                    // Typing indicator for the last item
                     HStack {
                         Spacer()
                         if text.isEmpty {
@@ -115,8 +145,12 @@ struct StreamingTodoRowView: View {
                         }
                     }
                 )
+                .animation(.linear(duration: 10).repeatForever(autoreverses: false), value: animate)
+                .onAppear {
+                    animate = true
+                }
         }
-        .listRowBackground(Color.gray.opacity(0.1))
+        .listRowBackground(Color.clear)
         .transition(.opacity.combined(with: .move(edge: .trailing)))
     }
 }
