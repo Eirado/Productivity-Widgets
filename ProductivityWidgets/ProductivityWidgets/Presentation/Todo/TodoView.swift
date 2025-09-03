@@ -102,24 +102,33 @@ struct StreamingTodoRowView: View {
     
     @State private var animate = false
     
-    // The exact gradient colors from your example
-    let gradientColors: [Color] = [
-        .yellow.opacity(0.1), .mint.opacity(0.2), .yellow.opacity(0.1),
-        .purple, .orange, .pink, .purple, .cyan, .purple, .pink, .orange,
-        .mint.opacity(0.1), .mint.opacity(0.2), .yellow.opacity(0.1)
-    ]
+ 
+    let electricBlue = Color(red: 0.2, green: 0.8, blue: 1.0)
+    let vividViolet = Color(red: 0.65, green: 0.4, blue: 1.0)
+    let luminousMagenta = Color(red: 1.0, green: 0.3, blue: 0.8)
+    let goldenOrange = Color(red: 1.0, green: 0.7, blue: 0.2)
+
+    // The new gradient using the custom palette
+    var gradientColors: [Color] {
+        [
+            electricBlue.opacity(0.6),
+            vividViolet,
+            luminousMagenta,
+            goldenOrange,
+            luminousMagenta,
+            vividViolet,
+            electricBlue.opacity(0.6)
+        ]
+    }
     
     var body: some View {
         HStack {
             Image(systemName: "circle")
                 .foregroundColor(.gray.opacity(0.6))
             
-            // We start with your original Text view to preserve its layout perfectly.
             Text(text)
                 .opacity(0.8)
-                // We make the text itself clear...
                 .foregroundColor(.clear)
-                // ...and paint the animated gradient in the background.
                 .background(
                     LinearGradient(
                         gradient: Gradient(colors: gradientColors),
@@ -127,15 +136,14 @@ struct StreamingTodoRowView: View {
                         endPoint: .trailing
                     )
                     .frame(width: UIScreen.main.bounds.width * 8.9, height: 800)
+                    .blur(radius: 10)
                     .offset(x: animate ? UIScreen.main.bounds.width * -3.4 : UIScreen.main.bounds.width * 4)
                     .rotationEffect(.degrees(20)).rotationEffect(.degrees(180))
                 )
-                // The mask clips the background gradient to the shape of the text.
                 .mask(
                     Text(text)
                         .opacity(0.8)
                 )
-                // Your original overlay for the "typing" indicator is untouched.
                 .overlay(
                     HStack {
                         Spacer()
@@ -145,7 +153,7 @@ struct StreamingTodoRowView: View {
                         }
                     }
                 )
-                .animation(.linear(duration: 10).repeatForever(autoreverses: false), value: animate)
+                .animation(.linear(duration: 3.5).repeatForever(autoreverses: true), value: animate)
                 .onAppear {
                     animate = true
                 }
