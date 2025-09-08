@@ -86,6 +86,8 @@ struct TodoView: View, SizedViewProtocol {
             .glassEffect(isEnabled: false)
             .glassEffectTransition(.identity, isEnabled: false)
             .navigationTitle("Todo List")
+        }.task {
+            viewModel.prewarm()
         }
     }
     
@@ -93,6 +95,7 @@ struct TodoView: View, SizedViewProtocol {
         // Kept for compatibility
     }
 }
+
 
 import SwiftUI
 
@@ -102,13 +105,11 @@ struct StreamingTodoRowView: View {
     
     @State private var animate = false
     
- 
     let electricBlue = Color(red: 0.2, green: 0.8, blue: 1.0)
     let vividViolet = Color(red: 0.65, green: 0.4, blue: 1.0)
     let luminousMagenta = Color(red: 1.0, green: 0.3, blue: 0.8)
     let goldenOrange = Color(red: 1.0, green: 0.7, blue: 0.2)
 
-    // The new gradient using the custom palette
     var gradientColors: [Color] {
         [
             electricBlue.opacity(0.6),
@@ -122,11 +123,15 @@ struct StreamingTodoRowView: View {
     }
     
     var body: some View {
-        HStack {
+        // Match the spacing and alignment from TodoRowView
+        HStack(spacing: 8) { // <-- Added spacing
             Image(systemName: "circle")
+                .font(.title2)
+                .padding(3) // <-- Added padding
                 .foregroundColor(.gray.opacity(0.6))
-            
+         
             Text(text)
+                .font(.interItalic(fontweight: .regular, fontStyle: .body))
                 .opacity(0.8)
                 .foregroundColor(.clear)
                 .background(
@@ -142,22 +147,15 @@ struct StreamingTodoRowView: View {
                 )
                 .mask(
                     Text(text)
+                        .font(.interItalic(fontweight: .regular, fontStyle: .body))
                         .opacity(0.8)
-                )
-                .overlay(
-                    HStack {
-                        Spacer()
-                        if text.isEmpty {
-                            ProgressView()
-                                .scaleEffect(0.8)
-                        }
-                    }
                 )
                 .animation(.linear(duration: 3.5).repeatForever(autoreverses: true), value: animate)
                 .onAppear {
                     animate = true
                 }
         }
+        .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 10))
         .listRowBackground(Color.clear)
         .transition(.opacity.combined(with: .move(edge: .trailing)))
     }
